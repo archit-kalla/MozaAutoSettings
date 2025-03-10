@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MozaAutoSettings (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "MozaAutoSettings (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
