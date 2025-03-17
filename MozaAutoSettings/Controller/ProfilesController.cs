@@ -11,32 +11,16 @@ namespace MozaAutoSettings.Controller
     class ProfilesController
     {
         //public List<String> processes { get; set; }
-        public List<ProfileModel> ProfileList { get; set; }
+        public List<ProfileModel> ProfileList { get; set; } = new List<ProfileModel>();
 
         public ProfilesController() 
         {
-            //this.processes = new List<String>();
-            //refreshProceses();
-            this.ProfileList = new List<ProfileModel>();
-            
         }
 
         public void addProfile(ProfileModel profile)
         {
             this.ProfileList.Add(profile);
         }
-        //public void refreshProceses()
-        //{
-        //    this.processes.Clear();
-        //    Process[] processes = Process.GetProcesses();
-        //    foreach (Process p in processes)
-        //    {
-        //        if (!String.IsNullOrEmpty(p.MainWindowTitle))
-        //        {
-        //            this.processes.Add(p.ProcessName);
-        //        }
-        //    }
-        //}
 
         
         public void removeProfile(ProfileModel profile) 
@@ -68,6 +52,18 @@ namespace MozaAutoSettings.Controller
             }
         }
 
+        //public void refreshProceses()
+        //{
+        //    this.processes.Clear();
+        //    Process[] processes = Process.GetProcesses();
+        //    foreach (Process p in processes)
+        //    {
+        //        if (!String.IsNullOrEmpty(p.MainWindowTitle))
+        //        {
+        //            this.processes.Add(p.ProcessName);
+        //        }
+        //    }
+        //}
 
     }
 }

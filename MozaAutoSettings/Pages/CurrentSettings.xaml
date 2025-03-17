@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="MozaAutoSettings.Pages.CurrentSettings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MozaAutoSettings.Pages"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <!--  These styles can be referenced to create a consistent SettingsPage layout  -->
+
+        <!--  Spacing between cards  -->
+        <x:Double x:Key="SettingsCardSpacing">4</x:Double>
+    </Page.Resources>
+
+
+
+    <ScrollView>
+
+<StackPanel Orientation="Vertical" 
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Top" 
+            Margin="30,40,20,10" 
+            Spacing="4">
+
+
+        <controls:SettingsExpander Description="Basic Controls for FFB strength, Wheel Angle, and more"
+                                   Header="Basic Settings"
+                                   IsExpanded="True">
+            <controls:SettingsExpander.Items>
+                <controls:SettingsCard Header="FFB Reversal" 
+                                       Description="Reverses the FFB direction when enabled">
+                    <ToggleSwitch/>
+                </controls:SettingsCard>
+                <controls:SettingsCard Header="Hands Off Protection" 
+                                       Description="Protects against hands off steering">
+                    <ToggleSwitch/>
+                </controls:SettingsCard>
+                <controls:SettingsCard Header="Maximum Steering Angle" 
+                                       Description="Set the maximum steering angle for the wheel">
+                    <ComboBox IsEditable="True"
+                              Width="200"/>
+                </controls:SettingsCard>
+                <controls:SettingsCard Header="Game FFB Intensity" 
+                                       Description="Adjust Overall FFB Intesity sent to the wheel">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider Minimum="0" Maximum="100"
+                                Value="100"
+                                HorizontalAlignment="Left"
+                                x:Name="FFBIntensity"
+                                Grid.Column="0"
+                                Width="300"/>
+                        <TextBlock Grid.Column="1" Text="{Binding ElementName=FFBIntensity, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   />
+                    </Grid>
+                </controls:SettingsCard>
+                <controls:SettingsCard Header="Maximum Output Torque Limit" 
+                                       Description="Set maximum allowed torque sent to the wheelbase. Can help prevent damage from excessive FFB or users struggling with strong force feedback. ">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider Minimum="50" Maximum="100"
+                                Value="100"
+                                HorizontalAlignment="Left"
+                                x:Name="TorqueLimit"
+                                Grid.Column="0"
+                                Width="300"/>
+                        <TextBlock Grid.Column="1" Text="{Binding ElementName=TorqueLimit, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   />
+                    </Grid>
+                </controls:SettingsCard>
+                <controls:SettingsCard Header="Maximum Wheel Speed" 
+                                       Description="Change rotational speed of the wheel, can be useful for drifting">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider Minimum="10" Maximum="200"
+                                Value="100"
+                                HorizontalAlignment="Left"
+                                x:Name="WheelSpeed"
+                                Grid.Column="0"
+                                Width="300"/>
+                        <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=WheelSpeed, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   />
+                    </Grid>
+                    
+                </controls:SettingsCard>
+            </controls:SettingsExpander.Items>
+        </controls:SettingsExpander>
+
+        <controls:SettingsExpander Description="Damping Friction and Intertia Settings"
+                                   Header="Advanced Settings"
+                                   IsExpanded="True"
+                                   >
+            <controls:SettingsExpander.Items>
+                <controls:SettingsCard Header="Natural Damping" 
+                        Description="">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider Minimum="0" Maximum="100"
+                                Value="0"
+                                HorizontalAlignment="Left"
+                                x:Name="NaturalDamping"
+                                Grid.Column="0"
+                                Width="300"/>
+                        <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=NaturalDamping, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   />
+                    </Grid>
+                </controls:SettingsCard>
+                <controls:SettingsCard Header="Natural Friction" 
+                                        Description="">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider Minimum="0" Maximum="100"
+                                Value="0"
+                                HorizontalAlignment="Left"
+                                x:Name="NaturalFriction"
+                                Grid.Column="0"
+                                Width="300"/>
+                        <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=NaturalFriction, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                   />
+                    </Grid>
+                </controls:SettingsCard>
+                <controls:SettingsCard Header="Natural Intertia" 
+                                       Description="">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider Minimum="100" Maximum="500"
+                                Value="0"
+                                HorizontalAlignment="Left"
+                                x:Name="NaturalIntertia"
+                                Grid.Column="0"
+                                Width="300"/>
+                        <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=NaturalIntertia, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                   />
+                    </Grid>
+                </controls:SettingsCard>
+                <controls:SettingsCard Header="Wheel Spring Strength" 
+                                       Description="">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider Minimum="0" Maximum="100"
+                                Value="0"
+                                HorizontalAlignment="Left"
+                                x:Name="WheelSpringStrength"
+                                Grid.Column="0"
+                                Width="300"/>
+                        <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=WheelSpringStrength, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                   />
+                    </Grid>
+                </controls:SettingsCard>
+                <controls:SettingsCard Header="Speed Dependent Damping" 
+                                       Description="">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider Minimum="0" Maximum="100"
+                                Value="0"
+                                HorizontalAlignment="Left"
+                                x:Name="SpeedDependentDamping"
+                                Grid.Column="0"
+                                Width="300"/>
+                        <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=SpeedDependentDamping, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                   />
+                    </Grid>
+                </controls:SettingsCard>
+                <controls:SettingsCard Header="Start of Speed Dependent Damping" 
+                                       Description="">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="60"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider Minimum="0" Maximum="400"
+                                Value="0"
+                                HorizontalAlignment="Left"
+                                x:Name="StartSpeedDependentDamping"
+                                Grid.Column="0"
+                                Width="300"/>
+                        <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=StartSpeedDependentDamping, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                   />
+                    </Grid>
+                </controls:SettingsCard>
+            </controls:SettingsExpander.Items>
+        </controls:SettingsExpander>
+        <controls:SettingsCard Header="FFB Equalizer" 
+                               Description="">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="500" />
+                    <RowDefinition Height="25" />
+                </Grid.RowDefinitions>
+                    <TextBlock Grid.Column="0" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                10Hz
+                            </Bold>
+                        </Span>
+                    </TextBlock>
+                    <TextBlock Grid.Column="1" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                15Hz
+                            </Bold>
+                        </Span>
+                    </TextBlock>
+                    <TextBlock Grid.Column="2" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                25Hz
+                            </Bold>
+                        </Span>
+                    </TextBlock>
+                    <TextBlock Grid.Column="3" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                40Hz
+                            </Bold>
+                        </Span>
+                    </TextBlock>
+                    <TextBlock Grid.Column="4" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                60Hz
+                            </Bold>
+                        </Span>
+                    </TextBlock>
+                    <TextBlock Grid.Column="5" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                100Hz
+                            </Bold>
+                        </Span>
+                    </TextBlock>
+                    <Slider Minimum="0" Maximum="500"
+                        Value="100"
+                        HorizontalAlignment="Left"
+                        x:Name="EqualizerAmp7_5"
+                        Grid.Column="0"
+                        Grid.Row="1"
+                        Width="100"
+                        Orientation="Vertical"/>
+                    <Slider Minimum="0" Maximum="500"
+                        Value="100"
+                        HorizontalAlignment="Left"
+                        x:Name="EqualizerAmp13"
+                        Grid.Column="1"
+                            Grid.Row="1"
+                        Width="100"
+                        Orientation="Vertical"/>
+                    <Slider Minimum="0" Maximum="500"
+                        Value="100"
+                        HorizontalAlignment="Left"
+                        x:Name="EqualizerAmp22_5"
+                        Grid.Column="2"
+                            Grid.Row="1"
+                        Width="100"
+                        Orientation="Vertical"/>
+                    <Slider Minimum="0" Maximum="500"
+                        Value="100"
+                        HorizontalAlignment="Left"
+                        x:Name="EqualizerAmp39"
+                        Grid.Column="3"
+                            Grid.Row="1"
+                        Width="100"
+                        Orientation="Vertical"/>
+                    <Slider Minimum="0" Maximum="500"
+                        Value="100"
+                        HorizontalAlignment="Left"
+                        x:Name="EqualizerAmp55"
+                        Grid.Column="4"
+                            Grid.Row="1"
+                        Width="100"
+                        Orientation="Vertical"/>
+                    <Slider Minimum="0" Maximum="500"
+                        Value="100"
+                        HorizontalAlignment="Left"
+                        x:Name="EqualizerAmp100"
+                        Grid.Column="5"
+                            Grid.Row="1"
+                        Width="100"
+                        Orientation="Vertical"/>
+                    <TextBlock Grid.Column="0" 
+                               Grid.Row="2"
+                               Text="{Binding ElementName=EqualizerAmp7_5, Path=Value}" 
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Left" />
+                    <TextBlock Grid.Column="1" 
+                               Grid.Row="2"
+                                Text="{Binding ElementName=EqualizerAmp13, Path=Value}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left" />
+                    <TextBlock Grid.Column="2" 
+                               Grid.Row="2"
+                                Text="{Binding ElementName=EqualizerAmp22_5, Path=Value}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left" />
+                    <TextBlock Grid.Column="3" 
+                               Grid.Row="2"
+                                Text="{Binding ElementName=EqualizerAmp39, Path=Value}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left" />
+                    <TextBlock Grid.Column="4" 
+                               Grid.Row="2"
+                                Text="{Binding ElementName=EqualizerAmp55, Path=Value}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left" />
+                    <TextBlock Grid.Column="5" 
+                               Grid.Row="2"
+                                Text="{Binding ElementName=EqualizerAmp100, Path=Value}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left" />
+                </Grid>
+
+        </controls:SettingsCard>
+    </StackPanel>
+    </ScrollView>
+</Page>

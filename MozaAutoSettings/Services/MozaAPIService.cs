@@ -26,6 +26,17 @@ namespace MozaAutoSettings.Services
             mozaAPI.mozaAPI.setMotorSpeedDampingStartPoint(wheelBaseSettings.MotorSpeedDampingStartPoint);
             mozaAPI.mozaAPI.setMotorHandsOffProtection(wheelBaseSettings.MotorHandsOffProtection);
             mozaAPI.mozaAPI.setMotorFfbReverse(wheelBaseSettings.MotorFfbReverse);
+
+            //packs the individual equalizer amps to a dictionary
+            wheelBaseSettings.MotorEqualizerAmp = new Dictionary<string, int>
+            {
+                { "EqualizerAmp7_5", wheelBaseSettings.EqualizerAmp7_5 },
+                { "EqualizerAmp13", wheelBaseSettings.EqualizerAmp13 },
+                { "EqualizerAmp22_5", wheelBaseSettings.EqualizerAmp22_5 },
+                { "EqualizerAmp39", wheelBaseSettings.EqualizerAmp39 },
+                { "EqualizerAmp55", wheelBaseSettings.EqualizerAmp55 },
+                { "EqualizerAmp100", wheelBaseSettings.EqualizerAmp100 }
+            };
             mozaAPI.mozaAPI.setMotorEqualizerAmp(wheelBaseSettings.MotorEqualizerAmp);
 
         }
@@ -52,6 +63,37 @@ namespace MozaAutoSettings.Services
                 MotorFfbReverse = mozaAPI.mozaAPI.getMotorFfbReverse(ref err),
                 MotorEqualizerAmp = mozaAPI.mozaAPI.getMotorEqualizerAmp(ref err)
             };
+            if (err != ERRORCODE.NORMAL)
+            {
+                // Handle error
+                Console.WriteLine("Error retrieving settings: " + err.ToString());
+                return null;
+            }
+            //unpacks the dictionary to the individual equalizer amps
+            foreach (var key in wheelBaseSettings.MotorEqualizerAmp.Keys.ToList())
+            {
+                switch (key)
+                {
+                    case "EqualizerAmp7_5":
+                        wheelBaseSettings.EqualizerAmp7_5 = wheelBaseSettings.MotorEqualizerAmp[key];
+                        break;
+                    case "EqualizerAmp13":
+                        wheelBaseSettings.EqualizerAmp13 = wheelBaseSettings.MotorEqualizerAmp[key];
+                        break;
+                    case "EqualizerAmp22_5":
+                        wheelBaseSettings.EqualizerAmp22_5 = wheelBaseSettings.MotorEqualizerAmp[key];
+                        break;
+                    case "EqualizerAmp39":
+                        wheelBaseSettings.EqualizerAmp39 = wheelBaseSettings.MotorEqualizerAmp[key];
+                        break;
+                    case "EqualizerAmp55":
+                        wheelBaseSettings.EqualizerAmp55 = wheelBaseSettings.MotorEqualizerAmp[key];
+                        break;
+                    case "EqualizerAmp100":
+                        wheelBaseSettings.EqualizerAmp100 = wheelBaseSettings.MotorEqualizerAmp[key];
+                        break;
+                }
+            }
 
             return wheelBaseSettings;
         }

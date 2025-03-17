@@ -5,16 +5,23 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:MozaAutoSettings.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local1="using:MozaAutoSettings.Models"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <DataTemplate x:Key="ProfileListTemplate" x:DataType="local1:ProfileModel">
+            <TextBlock Text="{x:Bind Name}" x:Phase="1" Margin="0,5,0,5"/>
+        </DataTemplate>
+    </Page.Resources>
 
     <SplitView x:Name="splitView" PaneBackground="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
            IsPaneOpen="True" OpenPaneLength="256" CompactPaneLength="48" DisplayMode="Inline">
         <SplitView.Pane>
-            <ListBox ItemsSource="{x:Bind ProfileList}" />
+            <ListView ItemTemplate="{StaticResource ProfileListTemplate}"/>
+            
         </SplitView.Pane>
+        
 
         <Grid>
             <Grid.RowDefinitions>

@@ -22,6 +22,12 @@ namespace MozaAutoSettings.Models
         public int MotorSpeedDampingStartPoint { get; set; }
         public int MotorHandsOffProtection { get; set; }
         public int MotorFfbReverse { get; set; }
+        public int EqualizerAmp7_5 { get; set; }
+        public int EqualizerAmp13 { get; set; }
+        public int EqualizerAmp22_5 { get; set; }
+        public int EqualizerAmp39 { get; set; }
+        public int EqualizerAmp55 { get; set; }
+        public int EqualizerAmp100 { get; set; }
         public Dictionary<string, int> MotorEqualizerAmp { get; set; }
 
     }

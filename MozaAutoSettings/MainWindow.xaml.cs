@@ -53,8 +53,8 @@ namespace MozaAutoSettings
                 case "Profiles":
                     contentFrame.Navigate(typeof(Profiles));
                     break;
-                case "Page2":
-                    //contentFrame.Navigate(typeof(MozaAutoSettings.Pages.Page2));
+                case "Current":
+                    contentFrame.Navigate(typeof(CurrentSettings));
                     break;
                 default:
                     break;

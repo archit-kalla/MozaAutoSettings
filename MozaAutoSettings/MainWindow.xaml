@@ -17,9 +17,17 @@
                         
                         >
             <NavigationView.MenuItems>
-                <NavigationViewItem Icon="Play" Content="Profiles" Tag="Profiles" />
+                <NavigationViewItem Content="Current Settings" Tag="Current">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE804;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Profiles" Tag="Profiles" >
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xF163;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
                 <NavigationViewItem Icon="Save" Content="Menu Item2" Tag="BlankPage1" />
-                <NavigationViewItem Icon="Refresh" Content="Menu Item3" Tag="SamplePage3" />
                 <NavigationViewItem Icon="Download" Content="Menu Item4" Tag="SamplePage4" />
             </NavigationView.MenuItems>
             <Frame x:Name="contentFrame"/>
