@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="MozaAutoSettings.Pages.Profiles"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MozaAutoSettings.Pages"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+
+    <SplitView x:Name="splitView" PaneBackground="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
+           IsPaneOpen="True" OpenPaneLength="256" CompactPaneLength="48" DisplayMode="Inline">
+        <SplitView.Pane>
+            <ListBox ItemsSource="{x:Bind ProfileList}" />
+        </SplitView.Pane>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="SPLITVIEW CONTENT"/>
+            <TextBlock x:Name="content" />
+        </Grid>
+    </SplitView>
+
+    <!-- <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+       -->
+        <!-- 
+        for a modal popup to add a profile
+        <Button Content="Standard XAML button" Click="refreshProcessesButtonClick" Grid.Column="1" Grid.Row="0"/>
+        <ListBox ItemsSource="{x:Bind Processes}" />
+        -->
+    <!--
+        <Button Content="addProfile" Click="addProfileClicked" Grid.Column="1" Grid.Row="0"/>
+        
+        <ListBox ItemsSource="{x:Bind ProfileList}" />
+    
+
+
+    </Grid>
+    -->
+</Page>
