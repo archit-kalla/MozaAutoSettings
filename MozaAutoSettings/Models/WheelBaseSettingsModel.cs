@@ -9,6 +9,18 @@ namespace MozaAutoSettings.Models
 
     public class WheelBaseSettingsModel
     {
+        //right now only synchronus support
+        public int MotorLimitAngle1
+        {
+            get => MotorLimitAngle.Item1;
+            set => MotorLimitAngle = new Tuple<int, int>(value, value);
+        }
+
+        //public int MotorLimitAngle2
+        //{
+        //    get => MotorLimitAngle.Item2;
+        //    set => MotorLimitAngle = new Tuple<int, int>(MotorLimitAngle.Item1, value);
+        //}
         public Tuple<int,int> MotorLimitAngle { get; set; }
         public int MotorRoadSensitivity { get; set; }
         public int MotorFfbStrength { get; set; }

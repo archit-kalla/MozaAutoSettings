@@ -27,7 +27,33 @@
             Margin="30,40,20,10" 
             Spacing="4">
 
-            <Button Content="Apply" Style="{StaticResource AccentButtonStyle}" Click="Apply_Clicked"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+                <Button Click="Apply_Clicked" Grid.Column="0" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xE8FB;" />
+                        <TextBlock Text="Apply" Margin= "10,0,10,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Click="Refresh_Clicked" Grid.Column="1" HorizontalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xE72C;" />
+                        <TextBlock Text="Refresh" Margin= "10,0,10,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource AccentButtonStyle}" Click="Save_Clicked" Grid.Column="2" HorizontalAlignment="Right" >
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xE792;" />
+                        <TextBlock Text="Save to profile" Margin= "10,0,10,0"/>
+                    </StackPanel>
+                </Button>
+
+            </Grid>
+            
 
 
             <controls:SettingsExpander Description="Basic Controls for FFB strength, Wheel Angle, and more"
@@ -44,10 +70,9 @@
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Maximum Steering Angle" 
                                        Description="Set the maximum steering angle for the wheel">
-                    <ComboBox IsEditable="True"
-                              Width="200"
+                    <ComboBox Width="200"
                               ItemsSource="{x:Bind wheelAngles}"
-                              SelectedItem="{Binding MotorLimitAngle.Item1, Mode=TwoWay, Converter={StaticResource IntegerConverter}}"
+                              SelectedItem="{Binding MotorLimitAngle1, Mode=TwoWay, Converter={StaticResource IntegerConverter}}"
                               />
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Game FFB Intensity" 
@@ -119,7 +144,7 @@
                                    >
             <controls:SettingsExpander.Items>
                 <controls:SettingsCard Header="Natural Damping" 
-                        Description="">
+                        Description="Linear damping effect added outside of the game meant to improve wheel stability. Reduces speed of fast movements">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -139,7 +164,7 @@
                     </Grid>
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Natural Friction" 
-                                        Description="">
+                                        Description="Simulates a car without power steering. Reduces osscillations by adding a constant force on the wheel.">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -159,7 +184,7 @@
                     </Grid>
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Natural Intertia" 
-                                       Description="">
+                                       Description="Increases the weight of the wheel effect">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -179,7 +204,7 @@
                     </Grid>
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Wheel Spring Strength" 
-                                       Description="">
+                                       Description="Return to center force effect">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -199,7 +224,7 @@
                     </Grid>
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Speed Dependent Damping" 
-                                       Description="">
+                                       Description="Increases the effect of Natural damping at speed">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -219,7 +244,7 @@
                     </Grid>
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Start of Speed Dependent Damping" 
-                                       Description="">
+                                       Description="Point at which speed dependent damping occurs. In KM/H">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
@@ -239,29 +264,33 @@
                     </Grid>
                 </controls:SettingsCard>
                     <controls:SettingsCard Header="Road Sensitivity" 
-                       Description="">
+                                            Description="Seems to set presets for the equalizer in pithouse, not enabled at the moment"
+                                           IsEnabled="False">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
-                            <Slider Minimum="0" Maximum="100"
-                                    HorizontalAlignment="Left"
-                                    x:Name="RoadSensitivity"
-                                    Grid.Column="0"
-                                    Width="300"
-                                    Value="{Binding MotorRoadSensitivity, Mode=TwoWay}"/>
-                            <TextBlock Grid.Column="1" 
-                                       Text="{Binding ElementName=RoadSensitivity, Path=Value}" 
-                                       VerticalAlignment="Center" 
-                                       HorizontalAlignment="Center" 
-   />
+
+                            <ComboBox Width="200"
+                                      ItemsSource="{x:Bind roadSensitivities}"
+                                      SelectedItem="{Binding MotorRoadSensitivity, Mode=TwoWay}"
+                                      />
                         </Grid>
                     </controls:SettingsCard>
                 </controls:SettingsExpander.Items>
         </controls:SettingsExpander>
-        <controls:SettingsCard Header="FFB Equalizer" 
-                               Description="">
+        <controls:SettingsCard  
+                               Description="Adjust the force feedback strength at different frequencies. Think of this like a sound equalizer.">
+                <controls:SettingsCard.Header>
+                    <TextBlock Grid.Column="0" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                FFB Equalizer
+                            </Bold>
+                        </Span>
+                    </TextBlock>
+                </controls:SettingsCard.Header>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -319,13 +348,18 @@
                         </Span>
                     </TextBlock>
                     <Slider Minimum="0" Maximum="500"
-                        HorizontalAlignment="Left"
-                        x:Name="EqualizerAmp7_5"
-                        Grid.Column="0"
-                        Grid.Row="1"
-                        Width="100"
-                        Orientation="Vertical"
-                        Value="{Binding EqualizerAmp7_5, Mode=TwoWay}"/>
+                            HorizontalAlignment="Left"
+                            x:Name="EqualizerAmp7_5"
+                            Grid.Column="0"
+                            Grid.Row="1"
+                            Width="100"
+                            Orientation="Vertical"
+                            Value="{Binding EqualizerAmp7_5, Mode=TwoWay}"
+                            TickFrequency="10"
+                            TickPlacement="Outside"
+                            SnapsTo="StepValues"
+                            StepFrequency="10"
+/>
                     <Slider Minimum="0" Maximum="500"
                         HorizontalAlignment="Left"
                         x:Name="EqualizerAmp13"
@@ -333,7 +367,12 @@
                             Grid.Row="1"
                         Width="100"
                             Value="{Binding EqualizerAmp13, Mode=TwoWay}"
-                        Orientation="Vertical"/>
+                        Orientation="Vertical"
+                            TickFrequency="10"
+TickPlacement="Outside"
+SnapsTo="StepValues"
+                            StepFrequency="10"
+/>
                     <Slider Minimum="0" Maximum="500"
                         HorizontalAlignment="Left"
                         x:Name="EqualizerAmp22_5"
@@ -341,7 +380,12 @@
                             Grid.Row="1"
                         Width="100"
                         Orientation="Vertical"
-                            Value="{Binding EqualizerAmp22_5, Mode=TwoWay}"/>
+                            Value="{Binding EqualizerAmp22_5, Mode=TwoWay}"
+                            TickFrequency="10"
+TickPlacement="Outside"
+SnapsTo="StepValues"
+                            StepFrequency="10"
+/>
                     <Slider Minimum="0" Maximum="500"
                         HorizontalAlignment="Left"
                         x:Name="EqualizerAmp39"
@@ -349,7 +393,12 @@
                             Grid.Row="1"
                         Width="100"
                         Orientation="Vertical"
-                            Value="{Binding EqualizerAmp39, Mode=TwoWay}"/>
+                            Value="{Binding EqualizerAmp39, Mode=TwoWay}"
+                            TickFrequency="10"
+TickPlacement="Outside"
+SnapsTo="StepValues"
+                            StepFrequency="10"
+/>
                     <Slider Minimum="0" Maximum="500"
                         HorizontalAlignment="Left"
                         x:Name="EqualizerAmp55"
@@ -357,15 +406,25 @@
                             Grid.Row="1"
                         Width="100"
                         Orientation="Vertical"
-                            Value="{Binding EqualizerAmp55, Mode=TwoWay}"/>
-                    <Slider Minimum="0" Maximum="500"
+                            Value="{Binding EqualizerAmp55, Mode=TwoWay}"
+                            TickFrequency="10"
+TickPlacement="Outside"
+SnapsTo="StepValues"
+                            StepFrequency="10"
+/>
+                    <Slider Minimum="0" Maximum="100"
                         HorizontalAlignment="Left"
                         x:Name="EqualizerAmp100"
                         Grid.Column="5"
                             Grid.Row="1"
                         Width="100"
                         Orientation="Vertical"
-                            Value="{Binding EqualizerAmp100, Mode=TwoWay}"/>
+                            Value="{Binding EqualizerAmp100, Mode=TwoWay}"
+                            TickFrequency="10"
+TickPlacement="Outside"
+SnapsTo="StepValues"
+                            StepFrequency="10"
+/>
                     <TextBlock Grid.Column="0" 
                                Grid.Row="2"
                                Text="{Binding ElementName=EqualizerAmp7_5, Path=Value}" 

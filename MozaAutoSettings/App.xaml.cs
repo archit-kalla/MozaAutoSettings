@@ -35,6 +35,9 @@ namespace MozaAutoSettings
             this.InitializeComponent();
         }
 
+        // store the window object
+        private Window? m_window;
+
         /// <summary>
         /// Invoked when the application is launched.
         /// </summary>
@@ -45,6 +48,9 @@ namespace MozaAutoSettings
             m_window.Activate();
         }
 
-        private Window? m_window;
+        public static Window GetWindow()
+        {
+            return ((App)Application.Current).m_window;
+        }
     }
 }

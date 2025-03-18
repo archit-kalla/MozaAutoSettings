@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="MozaAutoSettings.Dialogues.SaveToProfileDialogue"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MozaAutoSettings.Dialogues"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+
+    <StackPanel>
+        <TextBlock Text="Profile Name"
+                        FontSize="18"
+                        Margin="0,10,0,10"/>
+        <TextBox x:Name="profileName"
+                    Margin="0,10,0,10"
+                    />
+        <TextBlock Text="Select Process to associate"
+                        FontSize="18"
+                        Margin="0,10,0,10"/>
+        <!--  select process from list of running processes or browse for process -->
+
+        <StackPanel VerticalAlignment="Top"
+                    Orientation="Horizontal">
+            <Button x:Name="PickAFileButton"
+                    Content="Open a file"
+                    Click="PickAFileButton_Click"
+                    Margin="10,0,0,10"/>
+            <TextBlock x:Name="PickAFileOutputTextBlock" TextWrapping="Wrap" Padding="20,5,0,0"/>
+        </StackPanel>
+    </StackPanel>
+
+</Page>

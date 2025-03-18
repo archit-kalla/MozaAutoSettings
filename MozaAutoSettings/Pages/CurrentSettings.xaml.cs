@@ -16,6 +16,7 @@ using MozaAutoSettings.Controller;
 using MozaAutoSettings.Models;
 using System.Diagnostics;
 using MozaAutoSettings.Services;
+using MozaAutoSettings.Dialogues;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -30,6 +31,7 @@ namespace MozaAutoSettings.Pages
         public WheelBaseSettingsModel currentWheelBaseSettings { get; set; }
 
         public List<int> wheelAngles = new List<int>() { 360, 540, 900, 1080, 1440, 1800 };
+        public List<int> roadSensitivities = new List<int> () { 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50 };
         public CurrentSettings()
         {
             this.InitializeComponent();
@@ -82,6 +84,60 @@ namespace MozaAutoSettings.Pages
         private void Apply_Clicked(object sender, RoutedEventArgs e)
         {
             this.currentSettingsController.sendSettingsToWheelBase(this.currentWheelBaseSettings);
+        }
+
+        private void Refresh_Clicked(object sender, RoutedEventArgs e)
+        {
+            this.currentWheelBaseSettings = this.currentSettingsController.getCurrentWheelBaseSettings();
+        }
+
+        private async void Save_Clicked(object sender, RoutedEventArgs e)
+        {
+            // popup save dialog
+            ContentDialog dialog = new ContentDialog();
+
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            dialog.XamlRoot = this.XamlRoot;
+            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+            dialog.Title = "Save to Profile";
+            dialog.PrimaryButtonText = "Save";
+            dialog.CloseButtonText = "Cancel";
+            dialog.DefaultButton = ContentDialogButton.Primary;
+            var saveToProfileDialogue = new SaveToProfileDialogue();
+            dialog.Content = saveToProfileDialogue;
+
+            var result = await dialog.ShowAsync();
+
+
+            if (result == ContentDialogResult.Primary)
+            {
+                // save to profile
+                Debug.WriteLine("Save to profile");
+                // get the selected profile from the dialogue
+                var selectedFileName = saveToProfileDialogue.SelectedFileName;
+                if (!string.IsNullOrEmpty(selectedFileName))
+                {
+                    Debug.WriteLine("Selected file: " + selectedFileName);
+                    // Use the selected file name as needed
+                }
+                else
+                {
+                    Debug.WriteLine("file not selected or cancelled file pick");
+                }
+                    var profileName = saveToProfileDialogue.ProfileName;
+                if (!string.IsNullOrEmpty(profileName))
+                {
+                    Debug.WriteLine("Profile name: " + profileName);
+                    // Use the profile name as needed
+                }
+
+            }
+            else
+            {
+                // cancel
+                Debug.WriteLine("Cancel");
+            }
+
         }
     }
 }
