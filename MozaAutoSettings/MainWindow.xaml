@@ -17,14 +17,14 @@
                         
                         >
             <NavigationView.MenuItems>
-                <NavigationViewItem Content="Current Settings" Tag="Current">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE804;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="Profiles" Tag="Profiles" >
+                <NavigationViewItem Content="Profiles" Tag="Profiles" IsSelected="True">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xF163;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <NavigationViewItem Content="Current Settings" Tag="Current" >
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE804;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Icon="Save" Content="Menu Item2" Tag="BlankPage1" />

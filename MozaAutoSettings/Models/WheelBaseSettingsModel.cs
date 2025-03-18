@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace MozaAutoSettings.Models
 {
+
     public class WheelBaseSettingsModel
     {
         public Tuple<int,int> MotorLimitAngle { get; set; }
@@ -29,6 +30,12 @@ namespace MozaAutoSettings.Models
         public int EqualizerAmp55 { get; set; }
         public int EqualizerAmp100 { get; set; }
         public Dictionary<string, int> MotorEqualizerAmp { get; set; }
+
+        public WheelBaseSettingsModel()
+        {
+            MotorLimitAngle = new Tuple<int, int>(0, 0);
+            MotorEqualizerAmp = new Dictionary<string, int>();
+        }
 
     }
 }

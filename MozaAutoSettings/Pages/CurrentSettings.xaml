@@ -6,11 +6,12 @@
     xmlns:local="using:MozaAutoSettings.Pages"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local1="using:MozaAutoSettings.Converters"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
-        <!--  These styles can be referenced to create a consistent SettingsPage layout  -->
+        <local1:IntegerConverter x:Key="IntegerConverter"/>
+        <local1:IntToBoolConverter x:Key="IntToBoolConverter"/>
 
         <!--  Spacing between cards  -->
         <x:Double x:Key="SettingsCardSpacing">4</x:Double>
@@ -26,23 +27,28 @@
             Margin="30,40,20,10" 
             Spacing="4">
 
+            <Button Content="Apply" Style="{StaticResource AccentButtonStyle}" Click="Apply_Clicked"/>
 
-        <controls:SettingsExpander Description="Basic Controls for FFB strength, Wheel Angle, and more"
+
+            <controls:SettingsExpander Description="Basic Controls for FFB strength, Wheel Angle, and more"
                                    Header="Basic Settings"
                                    IsExpanded="True">
             <controls:SettingsExpander.Items>
                 <controls:SettingsCard Header="FFB Reversal" 
                                        Description="Reverses the FFB direction when enabled">
-                    <ToggleSwitch/>
+                        <ToggleSwitch IsOn="{Binding MotorFfbReverse, Mode=TwoWay, Converter={StaticResource IntToBoolConverter}}"/>
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Hands Off Protection" 
                                        Description="Protects against hands off steering">
-                    <ToggleSwitch/>
+                        <ToggleSwitch IsOn="{Binding MotorHandsOffProtection, Mode=TwoWay, Converter={StaticResource IntToBoolConverter}}"/>
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Maximum Steering Angle" 
                                        Description="Set the maximum steering angle for the wheel">
                     <ComboBox IsEditable="True"
-                              Width="200"/>
+                              Width="200"
+                              ItemsSource="{x:Bind wheelAngles}"
+                              SelectedItem="{Binding MotorLimitAngle.Item1, Mode=TwoWay, Converter={StaticResource IntegerConverter}}"
+                              />
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Game FFB Intensity" 
                                        Description="Adjust Overall FFB Intesity sent to the wheel">
@@ -52,11 +58,11 @@
                             <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
                         <Slider Minimum="0" Maximum="100"
-                                Value="100"
                                 HorizontalAlignment="Left"
                                 x:Name="FFBIntensity"
                                 Grid.Column="0"
-                                Width="300"/>
+                                Width="300"
+                                Value="{Binding MotorFfbStrength, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" Text="{Binding ElementName=FFBIntensity, Path=Value}" 
                                    VerticalAlignment="Center" 
                                    HorizontalAlignment="Center" 
@@ -71,11 +77,11 @@
                             <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
                         <Slider Minimum="50" Maximum="100"
-                                Value="100"
                                 HorizontalAlignment="Left"
                                 x:Name="TorqueLimit"
                                 Grid.Column="0"
-                                Width="300"/>
+                                Width="300"
+                                Value="{Binding MotorPeakTorque, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" Text="{Binding ElementName=TorqueLimit, Path=Value}" 
                                    VerticalAlignment="Center" 
                                    HorizontalAlignment="Center" 
@@ -90,11 +96,12 @@
                             <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
                         <Slider Minimum="10" Maximum="200"
-                                Value="100"
                                 HorizontalAlignment="Left"
                                 x:Name="WheelSpeed"
                                 Grid.Column="0"
-                                Width="300"/>
+                                Width="300"
+                                Value="{Binding MotorLimitWheelSpeed, Mode=TwoWay}"
+                                />
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=WheelSpeed, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -119,11 +126,11 @@
                             <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
                         <Slider Minimum="0" Maximum="100"
-                                Value="0"
                                 HorizontalAlignment="Left"
                                 x:Name="NaturalDamping"
                                 Grid.Column="0"
-                                Width="300"/>
+                                Width="300"
+                                Value="{Binding MotorNaturalDamper, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=NaturalDamping, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -139,11 +146,11 @@
                             <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
                         <Slider Minimum="0" Maximum="100"
-                                Value="0"
                                 HorizontalAlignment="Left"
                                 x:Name="NaturalFriction"
                                 Grid.Column="0"
-                                Width="300"/>
+                                Width="300"
+                                Value="{Binding MotorNaturalFriction, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=NaturalFriction, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -159,11 +166,11 @@
                             <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
                         <Slider Minimum="100" Maximum="500"
-                                Value="0"
                                 HorizontalAlignment="Left"
                                 x:Name="NaturalIntertia"
                                 Grid.Column="0"
-                                Width="300"/>
+                                Width="300"
+                                Value="{Binding MotorNaturalInertia, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=NaturalIntertia, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -179,11 +186,11 @@
                             <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
                         <Slider Minimum="0" Maximum="100"
-                                Value="0"
                                 HorizontalAlignment="Left"
                                 x:Name="WheelSpringStrength"
                                 Grid.Column="0"
-                                Width="300"/>
+                                Width="300"
+                                Value="{Binding MotorSpringStrength, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=WheelSpringStrength, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -199,11 +206,11 @@
                             <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
                         <Slider Minimum="0" Maximum="100"
-                                Value="0"
                                 HorizontalAlignment="Left"
                                 x:Name="SpeedDependentDamping"
                                 Grid.Column="0"
-                                Width="300"/>
+                                Width="300"
+                                Value="{Binding MotorSpeedDamping, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=SpeedDependentDamping, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -219,11 +226,11 @@
                             <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
                         <Slider Minimum="0" Maximum="400"
-                                Value="0"
                                 HorizontalAlignment="Left"
                                 x:Name="StartSpeedDependentDamping"
                                 Grid.Column="0"
-                                Width="300"/>
+                                Width="300"
+                                Value="{Binding MotorSpeedDampingStartPoint, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=StartSpeedDependentDamping, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -231,7 +238,27 @@
                    />
                     </Grid>
                 </controls:SettingsCard>
-            </controls:SettingsExpander.Items>
+                    <controls:SettingsCard Header="Road Sensitivity" 
+                       Description="">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <Slider Minimum="0" Maximum="100"
+                                    HorizontalAlignment="Left"
+                                    x:Name="RoadSensitivity"
+                                    Grid.Column="0"
+                                    Width="300"
+                                    Value="{Binding MotorRoadSensitivity, Mode=TwoWay}"/>
+                            <TextBlock Grid.Column="1" 
+                                       Text="{Binding ElementName=RoadSensitivity, Path=Value}" 
+                                       VerticalAlignment="Center" 
+                                       HorizontalAlignment="Center" 
+   />
+                        </Grid>
+                    </controls:SettingsCard>
+                </controls:SettingsExpander.Items>
         </controls:SettingsExpander>
         <controls:SettingsCard Header="FFB Equalizer" 
                                Description="">
@@ -292,53 +319,53 @@
                         </Span>
                     </TextBlock>
                     <Slider Minimum="0" Maximum="500"
-                        Value="100"
                         HorizontalAlignment="Left"
                         x:Name="EqualizerAmp7_5"
                         Grid.Column="0"
                         Grid.Row="1"
                         Width="100"
-                        Orientation="Vertical"/>
+                        Orientation="Vertical"
+                        Value="{Binding EqualizerAmp7_5, Mode=TwoWay}"/>
                     <Slider Minimum="0" Maximum="500"
-                        Value="100"
                         HorizontalAlignment="Left"
                         x:Name="EqualizerAmp13"
                         Grid.Column="1"
                             Grid.Row="1"
                         Width="100"
+                            Value="{Binding EqualizerAmp13, Mode=TwoWay}"
                         Orientation="Vertical"/>
                     <Slider Minimum="0" Maximum="500"
-                        Value="100"
                         HorizontalAlignment="Left"
                         x:Name="EqualizerAmp22_5"
                         Grid.Column="2"
                             Grid.Row="1"
                         Width="100"
-                        Orientation="Vertical"/>
+                        Orientation="Vertical"
+                            Value="{Binding EqualizerAmp22_5, Mode=TwoWay}"/>
                     <Slider Minimum="0" Maximum="500"
-                        Value="100"
                         HorizontalAlignment="Left"
                         x:Name="EqualizerAmp39"
                         Grid.Column="3"
                             Grid.Row="1"
                         Width="100"
-                        Orientation="Vertical"/>
+                        Orientation="Vertical"
+                            Value="{Binding EqualizerAmp39, Mode=TwoWay}"/>
                     <Slider Minimum="0" Maximum="500"
-                        Value="100"
                         HorizontalAlignment="Left"
                         x:Name="EqualizerAmp55"
                         Grid.Column="4"
                             Grid.Row="1"
                         Width="100"
-                        Orientation="Vertical"/>
+                        Orientation="Vertical"
+                            Value="{Binding EqualizerAmp55, Mode=TwoWay}"/>
                     <Slider Minimum="0" Maximum="500"
-                        Value="100"
                         HorizontalAlignment="Left"
                         x:Name="EqualizerAmp100"
                         Grid.Column="5"
                             Grid.Row="1"
                         Width="100"
-                        Orientation="Vertical"/>
+                        Orientation="Vertical"
+                            Value="{Binding EqualizerAmp100, Mode=TwoWay}"/>
                     <TextBlock Grid.Column="0" 
                                Grid.Row="2"
                                Text="{Binding ElementName=EqualizerAmp7_5, Path=Value}" 

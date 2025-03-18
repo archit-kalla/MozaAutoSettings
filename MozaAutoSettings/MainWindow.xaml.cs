@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Windows.Devices.Enumeration;
 using MozaAutoSettings.Pages;
 using System.Runtime.InteropServices;
+using MozaAutoSettings.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -30,13 +31,12 @@ namespace MozaAutoSettings
         {
             this.InitializeComponent();
 
-            contentFrame.Navigate(
-                       typeof(MozaAutoSettings.Pages.BlankPage1),
-                       null,
-                       new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo()
-                       );
-            LoadUnmanagedDll();
-            mozaAPI.mozaAPI.installMozaSDK();
+            //contentFrame.Navigate(
+            //           typeof(MozaAutoSettings.Pages.CurrentSettings),
+            //           null,
+            //           new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo()
+            //           );
+            MozaAPIService.Initialize();
         }
 
 
@@ -51,22 +51,19 @@ namespace MozaAutoSettings
                     contentFrame.Navigate(typeof(BlankPage1));
                     break;
                 case "Profiles":
-                    contentFrame.Navigate(typeof(Profiles));
+                    contentFrame.Navigate(typeof(Profiles),
+                        null,
+                        new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
                     break;
                 case "Current":
-                    contentFrame.Navigate(typeof(CurrentSettings));
+                    contentFrame.Navigate(typeof(CurrentSettings),
+                        null,
+                        new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
                     break;
                 default:
                     break;
             }
         }
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool SetDllDirectory(string lpPathName);
-
-        public static void LoadUnmanagedDll()
-        {
-            SetDllDirectory(@"C:\Users\Archit\source\repos\MozaAutoSettings\MozaAutoSettings\lib"); //TODO change this to dynamic path
-        }
     }
 }
