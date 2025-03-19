@@ -53,7 +53,7 @@ namespace MozaAutoSettings.Services
             err = mozaAPI.mozaAPI.setMotorNaturalFriction(wheelBaseSettings.MotorNaturalFriction);
             err = mozaAPI.mozaAPI.setMotorSpeedDamping(wheelBaseSettings.MotorSpeedDamping);
             err = mozaAPI.mozaAPI.setMotorPeakTorque(wheelBaseSettings.MotorPeakTorque);
-            err = mozaAPI.mozaAPI.setMotorNaturalInertiaRatio(wheelBaseSettings.MotorNaturalInertiaRatio);
+            //err = mozaAPI.mozaAPI.setMotorNaturalInertiaRatio(wheelBaseSettings.MotorNaturalInertiaRatio);
             err = mozaAPI.mozaAPI.setMotorNaturalInertia(wheelBaseSettings.MotorNaturalInertia);
             err = mozaAPI.mozaAPI.setMotorSpeedDampingStartPoint(wheelBaseSettings.MotorSpeedDampingStartPoint);
             err = mozaAPI.mozaAPI.setMotorHandsOffProtection(wheelBaseSettings.MotorHandsOffProtection);
@@ -154,79 +154,103 @@ namespace MozaAutoSettings.Services
             //validate each setting within bounds
             if (settings.MotorLimitAngle.Item1 < 90 || settings.MotorLimitAngle.Item2 < 90)
             {
+                Debug.WriteLine("Motor Limit Angle is invalid");
+                return false;
+            }
+            if (settings.MotorLimitAngle.Item1 > 2000 || settings.MotorLimitAngle.Item2 > 2000)
+            {
+                Debug.WriteLine("Motor Limit Angle is invalid");
                 return false;
             }
             if (settings.MotorRoadSensitivity < 0 || settings.MotorRoadSensitivity > 100)
             {
+                Debug.WriteLine("Motor Road Sensitivity is invalid");
                 return false;
             }
             if (settings.MotorFfbStrength < 0 || settings.MotorFfbStrength > 100)
             {
+                Debug.WriteLine("Motor FFB Strength is invalid");
                 return false;
             }
             if (settings.MotorLimitWheelSpeed < 10 || settings.MotorLimitWheelSpeed > 200)
             {
+                Debug.WriteLine("Motor Limit Wheel Speed is invalid");
                 return false;
             }
             if (settings.MotorSpringStrength < 0 || settings.MotorSpringStrength > 100)
             {
+                Debug.WriteLine("Motor Spring Strength is invalid");
                 return false;
             }
             if (settings.MotorNaturalDamper < 0 || settings.MotorNaturalDamper > 100)
             {
+                Debug.WriteLine("Motor Natural Damper is invalid");
                 return false;
             }
             if (settings.MotorNaturalFriction < 0 || settings.MotorNaturalFriction > 100)
             {
+                Debug.WriteLine("Motor Natural Friction is invalid");
                 return false;
             }
             if (settings.MotorSpeedDamping < 0 || settings.MotorSpeedDamping > 100)
             {
+                Debug.WriteLine("Motor Speed Damping is invalid");
                 return false;
             }
             if (settings.MotorPeakTorque < 50 || settings.MotorPeakTorque > 100)
             {
+                Debug.WriteLine("Motor Peak Torque is invalid");
                 return false;
             }
-            if (settings.MotorNaturalInertiaRatio < 0 || settings.MotorNaturalInertiaRatio > 100)
-            {
-                return false;
-            }
+            //if (settings.MotorNaturalInertiaRatio < 100 || settings.MotorNaturalInertiaRatio > 4000)
+            //{
+            //    Debug.WriteLine("Motor Natural Inertia Ratio is invalid");
+            //    return false;
+            //}
             if (settings.MotorNaturalInertia < 100 || settings.MotorNaturalInertia > 500)
             {
+                Debug.WriteLine("Motor Natural Inertia is invalid");
                 return false;
             }
             if (settings.MotorSpeedDampingStartPoint < 0 || settings.MotorSpeedDampingStartPoint > 400)
             {
+                Debug.WriteLine("Motor Speed Damping Start Point is invalid");
                 return false;
             }
 
             if (settings.EqualizerAmp7_5 < 0 || settings.EqualizerAmp7_5 > 500)
             {
+                Debug.WriteLine("Equalizer Amp 7.5 is invalid");
                 return false;
             }
             if (settings.EqualizerAmp13 < 0 || settings.EqualizerAmp13 > 500)
             {
+                Debug.WriteLine("Equalizer Amp 13 is invalid");
                 return false;
             }
             if (settings.EqualizerAmp22_5 < 0 || settings.EqualizerAmp22_5 > 500)
             {
+                Debug.WriteLine("Equalizer Amp 22.5 is invalid");
                 return false;
             }
             if (settings.EqualizerAmp39 < 0 || settings.EqualizerAmp39 > 500)
             {
+                Debug.WriteLine("Equalizer Amp 39 is invalid");
                 return false;
             }
             if (settings.EqualizerAmp55 < 0 || settings.EqualizerAmp55 > 500)
             {
+                Debug.WriteLine("Equalizer Amp 55 is invalid");
                 return false;
             }
             if (settings.EqualizerAmp100 < 0 || settings.EqualizerAmp100 > 100)
             {
+                Debug.WriteLine("Equalizer Amp 100 is invalid");
                 return false;
             }
             if (settings.MotorEqualizerAmp == null || settings.MotorEqualizerAmp.Count != 6)
             {
+                Debug.WriteLine("Motor Equalizer Amp is invalid");
                 return false;
             }
 

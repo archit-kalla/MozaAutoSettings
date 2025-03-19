@@ -2,6 +2,7 @@
 using MozaAutoSettings.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,11 +25,11 @@ namespace MozaAutoSettings.Controller
 
         public void updateCurrentWheelBaseSettingsFromAPI()
         {
-            currentWheelBaseSettings = MozaAPIService.getSettingsFromWheelBase();
+            this.currentWheelBaseSettings = MozaAPIService.getSettingsFromWheelBase();
             if (currentWheelBaseSettings == null)
             {
-                
-                currentWheelBaseSettings = MozaAPIService.getSettingsFromWheelBase();
+
+                this.currentWheelBaseSettings = MozaAPIService.getSettingsFromWheelBase();
 
             }
         }

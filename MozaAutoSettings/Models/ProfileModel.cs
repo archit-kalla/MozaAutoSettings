@@ -10,7 +10,6 @@ namespace MozaAutoSettings.Models
     {
         public string Name { get; set; }
         public string Process { get; set; }
-        public string ProcessPath { get; set; }
         public WheelBaseSettingsModel WheelBaseSettings { get; set; }
     }
 }

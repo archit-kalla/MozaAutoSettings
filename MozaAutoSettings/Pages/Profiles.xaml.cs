@@ -16,6 +16,8 @@ using System.Diagnostics;
 using static System.Net.Mime.MediaTypeNames;
 using MozaAutoSettings.Controller;
 using MozaAutoSettings.Models;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -25,36 +27,105 @@ namespace MozaAutoSettings.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Profiles : Page
+    public sealed partial class Profiles : Page, INotifyPropertyChanged
     {
         private ProfilesController _profilesController = new ProfilesController();
-        //public List<String> Processes
-        //{
-        //    get { return _profilesController.processes; }
-        //}
 
-        public List<ProfileModel> ProfileList
+        public List<ProfileModel> ProfileList;
+
+        private ProfileModel _selectedProfile;
+        public ProfileModel selectedProfile
         {
-            get { return _profilesController.ProfileList; }
+            get => _selectedProfile;
+            set
+            {
+                _selectedProfile = value;
+                OnPropertyChanged();
+            }
         }
 
+        private bool _isProfileSelected;
+        public bool isProfileSelected
+        {
+            get => _isProfileSelected;
+            set
+            {
+                _isProfileSelected = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public List<int> wheelAngles = new List<int>() { 360, 540, 900, 1080, 1440, 1800 };
+        public List<int> roadSensitivities = new List<int>() { 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50 };
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
         public Profiles()
         {
             this.InitializeComponent();
+
+            updateProfilesList();
+            this.isProfileSelected = false;
+            selectedProfile = new ProfileModel();
+            this.DataContext = this;
+
         }
 
-        //public void refreshProcessesButtonClick(object sender, RoutedEventArgs e)
+        private void updateProfilesList()
+        {
+            this.ProfileList = _profilesController.getProfiles();
+            profileListView.ItemsSource = this.ProfileList;
+        }
+
+        private void Refresh_Clicked(object sender, RoutedEventArgs e)
+        {
+            //refreshCurrentSettings();
+            updateProfilesList();
+            this.DataContext = this;
+        }
+
+        private void Save_Clicked(object sender, RoutedEventArgs e)
+        {
+            //saveProfile();
+            if (selectedProfile != null)
+            {
+                _profilesController.removeProfile(selectedProfile);
+                _profilesController.addProfile(selectedProfile);
+                updateProfilesList();
+            }
+        }
+
+
+        //private void ProfileListView_ItemClick(object sender, ItemClickEventArgs e)
         //{
-        //    _profilesController.refreshProceses();
-        //    //Debug.WriteLine("refreshing profiles");
-        //    //Debug.WriteLine(_profilesController.processes.Count);
-        //    //foreach (String p in _profilesController.processes)
-        //    //{
-        //    //    Debug.WriteLine(p);
-        //    //}
+        //    this.selectedProfile = (ProfileModel)profileListView.SelectedItem;
+        //    this.isProfileSelected = true;
+
+        //    if (selectedProfile != null)
+        //    {
+        //        Debug.WriteLine("Selected profile: " + selectedProfile.Name);
+        //    }
+        //    this.DataContext = this;
         //}
 
+        private void profileListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (profileListView.SelectedItem != null)
+            {
+                this.selectedProfile = (ProfileModel)profileListView.SelectedItem;
+                this.isProfileSelected = true;
+                if (selectedProfile != null)
+                {
+                    Debug.WriteLine("Selected profile: " + selectedProfile.Name);
+                }
+                this.DataContext = this;
+            }
 
 
+        }
     }
 }

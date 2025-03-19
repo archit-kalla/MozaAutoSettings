@@ -33,7 +33,7 @@
                     <ColumnDefinition Width="200"/>
                     <ColumnDefinition Width="200"/>
                 </Grid.ColumnDefinitions>
-                <Button Click="Apply_Clicked" Grid.Column="0" HorizontalAlignment="Left">
+                <Button Click="Apply_Clicked" Grid.Column="0" HorizontalAlignment="Left" IsEnabled="{Binding isSettingsValid}">
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Glyph="&#xE8FB;" />
                         <TextBlock Text="Apply" Margin= "10,0,10,0"/>
@@ -45,7 +45,7 @@
                         <TextBlock Text="Refresh" Margin= "10,0,10,0"/>
                     </StackPanel>
                 </Button>
-                <Button Style="{StaticResource AccentButtonStyle}" Click="Save_Clicked" Grid.Column="2" HorizontalAlignment="Right" >
+                <Button Style="{StaticResource AccentButtonStyle}" Click="Save_Clicked" Grid.Column="2" HorizontalAlignment="Right" IsEnabled="{Binding isSettingsValid}">
                     <StackPanel Orientation="Horizontal">
                         <FontIcon Glyph="&#xE792;" />
                         <TextBlock Text="Save to profile" Margin= "10,0,10,0"/>
@@ -58,21 +58,22 @@
 
             <controls:SettingsExpander Description="Basic Controls for FFB strength, Wheel Angle, and more"
                                    Header="Basic Settings"
-                                   IsExpanded="True">
+                                   IsExpanded="True"
+                                       IsEnabled="{Binding isSettingsValid}">
             <controls:SettingsExpander.Items>
                 <controls:SettingsCard Header="FFB Reversal" 
                                        Description="Reverses the FFB direction when enabled">
-                        <ToggleSwitch IsOn="{Binding MotorFfbReverse, Mode=TwoWay, Converter={StaticResource IntToBoolConverter}}"/>
+                        <ToggleSwitch IsOn="{Binding currentWheelBaseSettings.MotorFfbReverse, Mode=TwoWay, Converter={StaticResource IntToBoolConverter}}"/>
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Hands Off Protection" 
                                        Description="Protects against hands off steering">
-                        <ToggleSwitch IsOn="{Binding MotorHandsOffProtection, Mode=TwoWay, Converter={StaticResource IntToBoolConverter}}"/>
+                        <ToggleSwitch IsOn="{Binding currentWheelBaseSettings.MotorHandsOffProtection, Mode=TwoWay, Converter={StaticResource IntToBoolConverter}}"/>
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Maximum Steering Angle" 
                                        Description="Set the maximum steering angle for the wheel">
                     <ComboBox Width="200"
                               ItemsSource="{x:Bind wheelAngles}"
-                              SelectedItem="{Binding MotorLimitAngle1, Mode=TwoWay, Converter={StaticResource IntegerConverter}}"
+                              SelectedItem="{Binding currentWheelBaseSettings.MotorLimitAngle1, Mode=TwoWay, Converter={StaticResource IntegerConverter}}"
                               />
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Game FFB Intensity" 
@@ -87,7 +88,7 @@
                                 x:Name="FFBIntensity"
                                 Grid.Column="0"
                                 Width="300"
-                                Value="{Binding MotorFfbStrength, Mode=TwoWay}"/>
+                                Value="{Binding currentWheelBaseSettings.MotorFfbStrength, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" Text="{Binding ElementName=FFBIntensity, Path=Value}" 
                                    VerticalAlignment="Center" 
                                    HorizontalAlignment="Center" 
@@ -106,7 +107,7 @@
                                 x:Name="TorqueLimit"
                                 Grid.Column="0"
                                 Width="300"
-                                Value="{Binding MotorPeakTorque, Mode=TwoWay}"/>
+                                Value="{Binding currentWheelBaseSettings.MotorPeakTorque, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" Text="{Binding ElementName=TorqueLimit, Path=Value}" 
                                    VerticalAlignment="Center" 
                                    HorizontalAlignment="Center" 
@@ -125,7 +126,7 @@
                                 x:Name="WheelSpeed"
                                 Grid.Column="0"
                                 Width="300"
-                                Value="{Binding MotorLimitWheelSpeed, Mode=TwoWay}"
+                                Value="{Binding currentWheelBaseSettings.MotorLimitWheelSpeed, Mode=TwoWay}"
                                 />
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=WheelSpeed, Path=Value}" 
@@ -141,6 +142,7 @@
         <controls:SettingsExpander Description="Damping Friction and Intertia Settings"
                                    Header="Advanced Settings"
                                    IsExpanded="True"
+                                   IsEnabled="{Binding isSettingsValid}"
                                    >
             <controls:SettingsExpander.Items>
                 <controls:SettingsCard Header="Natural Damping" 
@@ -155,7 +157,7 @@
                                 x:Name="NaturalDamping"
                                 Grid.Column="0"
                                 Width="300"
-                                Value="{Binding MotorNaturalDamper, Mode=TwoWay}"/>
+                                Value="{Binding currentWheelBaseSettings.MotorNaturalDamper, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=NaturalDamping, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -175,7 +177,7 @@
                                 x:Name="NaturalFriction"
                                 Grid.Column="0"
                                 Width="300"
-                                Value="{Binding MotorNaturalFriction, Mode=TwoWay}"/>
+                                Value="{Binding currentWheelBaseSettings.MotorNaturalFriction, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=NaturalFriction, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -195,7 +197,7 @@
                                 x:Name="NaturalIntertia"
                                 Grid.Column="0"
                                 Width="300"
-                                Value="{Binding MotorNaturalInertia, Mode=TwoWay}"/>
+                                Value="{Binding currentWheelBaseSettings.MotorNaturalInertia, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=NaturalIntertia, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -215,7 +217,7 @@
                                 x:Name="WheelSpringStrength"
                                 Grid.Column="0"
                                 Width="300"
-                                Value="{Binding MotorSpringStrength, Mode=TwoWay}"/>
+                                Value="{Binding currentWheelBaseSettings.MotorSpringStrength, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=WheelSpringStrength, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -235,7 +237,7 @@
                                 x:Name="SpeedDependentDamping"
                                 Grid.Column="0"
                                 Width="300"
-                                Value="{Binding MotorSpeedDamping, Mode=TwoWay}"/>
+                                Value="{Binding currentWheelBaseSettings.MotorSpeedDamping, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=SpeedDependentDamping, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -255,7 +257,7 @@
                                 x:Name="StartSpeedDependentDamping"
                                 Grid.Column="0"
                                 Width="300"
-                                Value="{Binding MotorSpeedDampingStartPoint, Mode=TwoWay}"/>
+                                Value="{Binding currentWheelBaseSettings.MotorSpeedDampingStartPoint, Mode=TwoWay}"/>
                         <TextBlock Grid.Column="1" 
                                    Text="{Binding ElementName=StartSpeedDependentDamping, Path=Value}" 
                                    VerticalAlignment="Center" 
@@ -274,14 +276,15 @@
 
                             <ComboBox Width="200"
                                       ItemsSource="{x:Bind roadSensitivities}"
-                                      SelectedItem="{Binding MotorRoadSensitivity, Mode=TwoWay}"
+                                      SelectedItem="{Binding currentWheelBaseSettings.MotorRoadSensitivity, Mode=TwoWay}"
                                       />
                         </Grid>
                     </controls:SettingsCard>
                 </controls:SettingsExpander.Items>
         </controls:SettingsExpander>
         <controls:SettingsCard  
-                               Description="Adjust the force feedback strength at different frequencies. Think of this like a sound equalizer.">
+                               Description="Adjust the force feedback strength at different frequencies. Think of this like a sound equalizer."
+            IsEnabled="{Binding isSettingsValid}">
                 <controls:SettingsCard.Header>
                     <TextBlock Grid.Column="0" Grid.Row="0">
                         <Span>
@@ -354,7 +357,7 @@
                             Grid.Row="1"
                             Width="100"
                             Orientation="Vertical"
-                            Value="{Binding EqualizerAmp7_5, Mode=TwoWay}"
+                            Value="{Binding currentWheelBaseSettings.EqualizerAmp7_5, Mode=TwoWay}"
                             TickFrequency="10"
                             TickPlacement="Outside"
                             SnapsTo="StepValues"
@@ -366,7 +369,7 @@
                         Grid.Column="1"
                             Grid.Row="1"
                         Width="100"
-                            Value="{Binding EqualizerAmp13, Mode=TwoWay}"
+                            Value="{Binding currentWheelBaseSettings.EqualizerAmp13, Mode=TwoWay}"
                         Orientation="Vertical"
                             TickFrequency="10"
 TickPlacement="Outside"
@@ -380,7 +383,7 @@ SnapsTo="StepValues"
                             Grid.Row="1"
                         Width="100"
                         Orientation="Vertical"
-                            Value="{Binding EqualizerAmp22_5, Mode=TwoWay}"
+                            Value="{Binding currentWheelBaseSettings.EqualizerAmp22_5, Mode=TwoWay}"
                             TickFrequency="10"
 TickPlacement="Outside"
 SnapsTo="StepValues"
@@ -393,7 +396,7 @@ SnapsTo="StepValues"
                             Grid.Row="1"
                         Width="100"
                         Orientation="Vertical"
-                            Value="{Binding EqualizerAmp39, Mode=TwoWay}"
+                            Value="{Binding currentWheelBaseSettings.EqualizerAmp39, Mode=TwoWay}"
                             TickFrequency="10"
 TickPlacement="Outside"
 SnapsTo="StepValues"
@@ -406,7 +409,7 @@ SnapsTo="StepValues"
                             Grid.Row="1"
                         Width="100"
                         Orientation="Vertical"
-                            Value="{Binding EqualizerAmp55, Mode=TwoWay}"
+                            Value="{Binding currentWheelBaseSettings.EqualizerAmp55, Mode=TwoWay}"
                             TickFrequency="10"
 TickPlacement="Outside"
 SnapsTo="StepValues"
@@ -419,7 +422,7 @@ SnapsTo="StepValues"
                             Grid.Row="1"
                         Width="100"
                         Orientation="Vertical"
-                            Value="{Binding EqualizerAmp100, Mode=TwoWay}"
+                            Value="{Binding currentWheelBaseSettings.EqualizerAmp100, Mode=TwoWay}"
                             TickFrequency="10"
 TickPlacement="Outside"
 SnapsTo="StepValues"

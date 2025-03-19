@@ -17,6 +17,8 @@ using MozaAutoSettings.Models;
 using System.Diagnostics;
 using MozaAutoSettings.Services;
 using MozaAutoSettings.Dialogues;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -25,22 +27,178 @@ namespace MozaAutoSettings.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CurrentSettings : Page
+    public sealed partial class CurrentSettings : Page, INotifyPropertyChanged
     {
         private CurrentSettingsController currentSettingsController;
-        public WheelBaseSettingsModel currentWheelBaseSettings { get; set; }
+        private WheelBaseSettingsModel _currentWheelBaseSettings { get; set; }
+        public WheelBaseSettingsModel currentWheelBaseSettings
+        {
+            get => _currentWheelBaseSettings;
+            set
+            {
+                _currentWheelBaseSettings = value;
+                OnPropertyChanged();
+            }
+        }
 
         public List<int> wheelAngles = new List<int>() { 360, 540, 900, 1080, 1440, 1800 };
         public List<int> roadSensitivities = new List<int> () { 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50 };
+
+        private bool _isSettingsValid;
+        public bool isSettingsValid
+        {
+            get => _isSettingsValid;
+            set
+            {
+                _isSettingsValid = value;
+                OnPropertyChanged();
+            }
+        }
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         public CurrentSettings()
         {
-            this.InitializeComponent();
+            
             if (this.currentSettingsController == null)
             {
                 this.currentSettingsController = new CurrentSettingsController();
             }
-            this.currentWheelBaseSettings = this.currentSettingsController.getCurrentWheelBaseSettings();
+            refreshCurrentSettings();
+            debugWrite();
+            this.InitializeComponent();
 
+
+
+
+
+        }
+
+        private void refreshCurrentSettings()
+        {
+            this.currentSettingsController.updateCurrentWheelBaseSettingsFromAPI();
+            this.currentWheelBaseSettings = this.currentSettingsController.getCurrentWheelBaseSettings();
+            
+            this.isSettingsValid = MozaAPIService.validateSettings(this.currentWheelBaseSettings);
+            this.DataContext = this;
+        }
+        private void Apply_Clicked(object sender, RoutedEventArgs e)
+        {
+            this.currentSettingsController.sendSettingsToWheelBase(this.currentWheelBaseSettings);
+        }
+
+        private void Refresh_Clicked(object sender, RoutedEventArgs e)
+        {
+            refreshCurrentSettings();
+            debugWrite();
+            //update the UI
+            this.DataContext = this;
+        }
+
+        private async void Save_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (!MozaAPIService.validateSettings(this.currentWheelBaseSettings))
+            {
+                //pop up error dialogue
+                ContentDialog errorDialog = new ContentDialog();
+                errorDialog.XamlRoot = this.XamlRoot;
+                errorDialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+                errorDialog.Title = "Error";
+                errorDialog.Content = "Wheel Base Settings are invalid, please refresh";
+                errorDialog.PrimaryButtonText = "Refresh";
+
+                errorDialog.PrimaryButtonClick += (s, args) =>
+                {
+                    refreshCurrentSettings();
+                };
+
+                await errorDialog.ShowAsync();
+                return;
+            }
+
+            //package the settings into a profile
+
+
+            // popup save dialog
+            ContentDialog dialog = new ContentDialog();
+
+            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
+            dialog.XamlRoot = this.XamlRoot;
+            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+            dialog.Title = "Save to Profile";
+            dialog.PrimaryButtonText = "Save";
+            dialog.CloseButtonText = "Cancel";
+            dialog.DefaultButton = ContentDialogButton.Primary;
+            var saveToProfileDialogue = new SaveToProfileDialogue();
+            dialog.Content = saveToProfileDialogue;
+
+            var result = await dialog.ShowAsync();
+
+
+            if (result == ContentDialogResult.Primary)
+            {
+                // save to profile
+                Debug.WriteLine("Save to profile");
+                // get the selected profile from the dialogue
+                var selectedFileName = saveToProfileDialogue.SelectedFileName;
+                if (!string.IsNullOrEmpty(selectedFileName))
+                {
+                    Debug.WriteLine("Selected file: " + selectedFileName);
+                    // Use the selected file name as needed
+                }
+                else
+                {
+                    Debug.WriteLine("file not selected or cancelled file pick");
+                    return;
+                }
+                var profileName = saveToProfileDialogue.ProfileName;
+                if (!string.IsNullOrEmpty(profileName))
+                {
+                    Debug.WriteLine("Profile name: " + profileName);
+                    // Use the profile name as needed
+                }
+                else
+                {
+                    Debug.WriteLine("Profile name not entered");
+                    return;
+                }
+
+            }
+            else
+            {
+                // cancel
+                Debug.WriteLine("Cancel");
+            }
+
+            // save the profile
+            ProfileModel profile = new ProfileModel();
+            profile.Name = saveToProfileDialogue.ProfileName;
+            profile.Process = saveToProfileDialogue.SelectedFileName;
+            profile.WheelBaseSettings = this.currentWheelBaseSettings;
+
+            bool isWritten = ProfilesController.writeProfileToProfileDir(profile);
+            //
+            if (!isWritten)
+            {
+                //pop up error dialogue
+                ContentDialog errorDialog = new ContentDialog();
+                errorDialog.XamlRoot = this.XamlRoot;
+                errorDialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+                errorDialog.Title = "Error";
+                errorDialog.Content = "Failed to write profile";
+                errorDialog.PrimaryButtonText = "Ok";
+
+                await errorDialog.ShowAsync();
+                return;
+            }
+        }
+
+        private void debugWrite()
+        {
             //write debug for currentwheelbase settings
             Console.WriteLine("Current Wheel Base Settings:");
             if (this.currentWheelBaseSettings == null)
@@ -75,69 +233,6 @@ namespace MozaAutoSettings.Pages
                     " Equalizer 100: " + this.currentWheelBaseSettings.EqualizerAmp100
                 );
             }
-            
-
-            this.DataContext = this.currentWheelBaseSettings;
-
-        }
-
-        private void Apply_Clicked(object sender, RoutedEventArgs e)
-        {
-            this.currentSettingsController.sendSettingsToWheelBase(this.currentWheelBaseSettings);
-        }
-
-        private void Refresh_Clicked(object sender, RoutedEventArgs e)
-        {
-            this.currentWheelBaseSettings = this.currentSettingsController.getCurrentWheelBaseSettings();
-        }
-
-        private async void Save_Clicked(object sender, RoutedEventArgs e)
-        {
-            // popup save dialog
-            ContentDialog dialog = new ContentDialog();
-
-            // XamlRoot must be set in the case of a ContentDialog running in a Desktop app
-            dialog.XamlRoot = this.XamlRoot;
-            dialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
-            dialog.Title = "Save to Profile";
-            dialog.PrimaryButtonText = "Save";
-            dialog.CloseButtonText = "Cancel";
-            dialog.DefaultButton = ContentDialogButton.Primary;
-            var saveToProfileDialogue = new SaveToProfileDialogue();
-            dialog.Content = saveToProfileDialogue;
-
-            var result = await dialog.ShowAsync();
-
-
-            if (result == ContentDialogResult.Primary)
-            {
-                // save to profile
-                Debug.WriteLine("Save to profile");
-                // get the selected profile from the dialogue
-                var selectedFileName = saveToProfileDialogue.SelectedFileName;
-                if (!string.IsNullOrEmpty(selectedFileName))
-                {
-                    Debug.WriteLine("Selected file: " + selectedFileName);
-                    // Use the selected file name as needed
-                }
-                else
-                {
-                    Debug.WriteLine("file not selected or cancelled file pick");
-                }
-                    var profileName = saveToProfileDialogue.ProfileName;
-                if (!string.IsNullOrEmpty(profileName))
-                {
-                    Debug.WriteLine("Profile name: " + profileName);
-                    // Use the profile name as needed
-                }
-
-            }
-            else
-            {
-                // cancel
-                Debug.WriteLine("Cancel");
-            }
-
         }
     }
 }

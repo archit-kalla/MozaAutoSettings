@@ -5,57 +5,473 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:MozaAutoSettings.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local1="using:MozaAutoSettings.Models"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local1="using:MozaAutoSettings.Models" xmlns:local2="using:MozaAutoSettings.Converters"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <DataTemplate x:Key="ProfileListTemplate" x:DataType="local1:ProfileModel">
+        <DataTemplate x:Key="ProfileListTemplate" x:DataType="local1:ProfileModel" >
             <TextBlock Text="{x:Bind Name}" x:Phase="1" Margin="0,5,0,5"/>
         </DataTemplate>
+        <local2:IntegerConverter x:Key="IntegerConverter"/>
+        <local2:IntToBoolConverter x:Key="IntToBoolConverter"/>
     </Page.Resources>
 
     <SplitView x:Name="splitView" PaneBackground="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
            IsPaneOpen="True" OpenPaneLength="256" CompactPaneLength="48" DisplayMode="Inline">
         <SplitView.Pane>
-            <ListView ItemTemplate="{StaticResource ProfileListTemplate}"/>
-            
-        </SplitView.Pane>
-        
+            <ScrollView>
+                <StackPanel>
+                    <Button Click="Refresh_Clicked" Grid.Column="1" HorizontalAlignment="Center" Margin="10,10,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xE72C;" />
+                            <TextBlock Text="Refresh" Margin= "10,0,10,0"/>
+                        </StackPanel>
+                    </Button>
+                    <ListView ItemTemplate="{StaticResource ProfileListTemplate}" ItemsSource="{Binding ProfileList}" x:Name="profileListView" SelectionChanged="profileListView_SelectionChanged"/>
+                </StackPanel>
+                
+            </ScrollView>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="SPLITVIEW CONTENT"/>
-            <TextBlock x:Name="content" />
-        </Grid>
+        </SplitView.Pane>
+
+
+        <ScrollView>
+
+            <StackPanel Orientation="Vertical" 
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Top" 
+            Margin="30,40,20,10" 
+            Spacing="4">
+
+                <TextBlock Text="Profile Name" 
+                        FontSize="30"
+                        Margin="0,10,0,10"/>
+                <!-- to do -->
+
+                <Button Style="{StaticResource AccentButtonStyle}" Click="Save_Clicked" HorizontalAlignment="Right" >
+                    <StackPanel Orientation="Horizontal">
+                        <FontIcon Glyph="&#xE792;" />
+                        <TextBlock Text="Save to profile" Margin= "10,0,10,0"/>
+                    </StackPanel>
+                </Button>
+
+
+
+
+                <controls:SettingsExpander Description="Basic Controls for FFB strength, Wheel Angle, and more"
+                                   Header="Basic Settings"
+                                   IsExpanded="True"
+                                       x:Name="BasicSettings"
+                                           IsEnabled="{Binding isProfileSelected}">
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard Header="FFB Reversal" 
+                                       Description="Reverses the FFB direction when enabled">
+                            <ToggleSwitch IsOn="{Binding selectedProfile.WheelBaseSettings.MotorFfbReverse, Mode=TwoWay, Converter={StaticResource IntToBoolConverter}}"/>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="Hands Off Protection" 
+                                       Description="Protects against hands off steering">
+                            <ToggleSwitch IsOn="{Binding selectedProfile.WheelBaseSettings.MotorHandsOffProtection, Mode=TwoWay, Converter={StaticResource IntToBoolConverter}}"/>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="Maximum Steering Angle" 
+                                       Description="Set the maximum steering angle for the wheel">
+                            <ComboBox Width="200"
+                              ItemsSource="{x:Bind wheelAngles}"
+                              SelectedItem="{Binding selectedProfile.WheelBaseSettings.MotorLimitAngle1, Mode=TwoWay, Converter={StaticResource IntegerConverter}}"
+                              />
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="Game FFB Intensity" 
+                                       Description="Adjust Overall FFB Intesity sent to the wheel">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider Minimum="0" Maximum="100"
+                                HorizontalAlignment="Left"
+                                x:Name="FFBIntensity"
+                                Grid.Column="0"
+                                Width="300"
+                                Value="{Binding selectedProfile.WheelBaseSettings.MotorFfbStrength, Mode=TwoWay}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding ElementName=FFBIntensity, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   />
+                            </Grid>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="Maximum Output Torque Limit" 
+                                       Description="Set maximum allowed torque sent to the wheelbase. Can help prevent damage from excessive FFB or users struggling with strong force feedback. ">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider Minimum="50" Maximum="100"
+                                HorizontalAlignment="Left"
+                                x:Name="TorqueLimit"
+                                Grid.Column="0"
+                                Width="300"
+                                Value="{Binding selectedProfile.WheelBaseSettings.MotorPeakTorque, Mode=TwoWay}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding ElementName=TorqueLimit, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   />
+                            </Grid>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="Maximum Wheel Speed" 
+                                       Description="Change rotational speed of the wheel, can be useful for drifting">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider Minimum="10" Maximum="200"
+                                HorizontalAlignment="Left"
+                                x:Name="WheelSpeed"
+                                Grid.Column="0"
+                                Width="300"
+                                Value="{Binding selectedProfile.WheelBaseSettings.MotorLimitWheelSpeed, Mode=TwoWay}"
+                                />
+                                <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=WheelSpeed, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   />
+                            </Grid>
+
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+
+                <controls:SettingsExpander Description="Damping Friction and Intertia Settings"
+                                   Header="Advanced Settings"
+                                   IsExpanded="True"
+                                   x:Name="AdvancedSettings"
+                                           IsEnabled="{Binding isProfileSelected}"
+                                   >
+                    <controls:SettingsExpander.Items>
+                        <controls:SettingsCard Header="Natural Damping" 
+                        Description="Linear damping effect added outside of the game meant to improve wheel stability. Reduces speed of fast movements">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider Minimum="0" Maximum="100"
+                                HorizontalAlignment="Left"
+                                x:Name="NaturalDamping"
+                                Grid.Column="0"
+                                Width="300"
+                                Value="{Binding selectedProfile.WheelBaseSettings.MotorNaturalDamper, Mode=TwoWay}"/>
+                                <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=NaturalDamping, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                                   />
+                            </Grid>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="Natural Friction" 
+                                        Description="Simulates a car without power steering. Reduces osscillations by adding a constant force on the wheel.">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider Minimum="0" Maximum="100"
+                                HorizontalAlignment="Left"
+                                x:Name="NaturalFriction"
+                                Grid.Column="0"
+                                Width="300"
+                                Value="{Binding selectedProfile.WheelBaseSettings.MotorNaturalFriction, Mode=TwoWay}"/>
+                                <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=NaturalFriction, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                   />
+                            </Grid>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="Natural Intertia" 
+                                       Description="Increases the weight of the wheel effect">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider Minimum="100" Maximum="500"
+                                HorizontalAlignment="Left"
+                                x:Name="NaturalIntertia"
+                                Grid.Column="0"
+                                Width="300"
+                                Value="{Binding selectedProfile.WheelBaseSettings.MotorNaturalInertia, Mode=TwoWay}"/>
+                                <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=NaturalIntertia, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                   />
+                            </Grid>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="Wheel Spring Strength" 
+                                       Description="Return to center force effect">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider Minimum="0" Maximum="100"
+                                HorizontalAlignment="Left"
+                                x:Name="WheelSpringStrength"
+                                Grid.Column="0"
+                                Width="300"
+                                Value="{Binding selectedProfile.WheelBaseSettings.MotorSpringStrength, Mode=TwoWay}"/>
+                                <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=WheelSpringStrength, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                   />
+                            </Grid>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="Speed Dependent Damping" 
+                                       Description="Increases the effect of Natural damping at speed">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider Minimum="0" Maximum="100"
+                                HorizontalAlignment="Left"
+                                x:Name="SpeedDependentDamping"
+                                Grid.Column="0"
+                                Width="300"
+                                Value="{Binding selectedProfile.WheelBaseSettings.MotorSpeedDamping, Mode=TwoWay}"/>
+                                <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=SpeedDependentDamping, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                   />
+                            </Grid>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="Start of Speed Dependent Damping" 
+                                       Description="Point at which speed dependent damping occurs. In KM/H">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Slider Minimum="0" Maximum="400"
+                                HorizontalAlignment="Left"
+                                x:Name="StartSpeedDependentDamping"
+                                Grid.Column="0"
+                                Width="300"
+                                Value="{Binding selectedProfile.WheelBaseSettings.MotorSpeedDampingStartPoint, Mode=TwoWay}"/>
+                                <TextBlock Grid.Column="1" 
+                                   Text="{Binding ElementName=StartSpeedDependentDamping, Path=Value}" 
+                                   VerticalAlignment="Center" 
+                                   HorizontalAlignment="Center" 
+                   />
+                            </Grid>
+                        </controls:SettingsCard>
+                        <controls:SettingsCard Header="Road Sensitivity" 
+                                            Description="Seems to set presets for the equalizer in pithouse, not enabled at the moment"
+                                           IsEnabled="False">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ComboBox Width="200"
+                                      ItemsSource="{x:Bind roadSensitivities}"
+                                      SelectedItem="{Binding selectedProfile.WheelBaseSettings.MotorRoadSensitivity, Mode=TwoWay}"
+                                      />
+                            </Grid>
+                        </controls:SettingsCard>
+                    </controls:SettingsExpander.Items>
+                </controls:SettingsExpander>
+                <controls:SettingsCard  
+                               Description="Adjust the force feedback strength at different frequencies. Think of this like a sound equalizer."
+                    x:Name="FFBEqualizer"
+                    IsEnabled="{Binding isProfileSelected}">
+                    <controls:SettingsCard.Header>
+                        <TextBlock Grid.Column="0" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                FFB Equalizer
+                            </Bold>
+                        </Span>
+                        </TextBlock>
+                    </controls:SettingsCard.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="500" />
+                            <RowDefinition Height="25" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Column="0" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                10Hz
+                            </Bold>
+                        </Span>
+                        </TextBlock>
+                        <TextBlock Grid.Column="1" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                15Hz
+                            </Bold>
+                        </Span>
+                        </TextBlock>
+                        <TextBlock Grid.Column="2" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                25Hz
+                            </Bold>
+                        </Span>
+                        </TextBlock>
+                        <TextBlock Grid.Column="3" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                40Hz
+                            </Bold>
+                        </Span>
+                        </TextBlock>
+                        <TextBlock Grid.Column="4" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                60Hz
+                            </Bold>
+                        </Span>
+                        </TextBlock>
+                        <TextBlock Grid.Column="5" Grid.Row="0">
+                        <Span>
+                            <Bold>
+                                100Hz
+                            </Bold>
+                        </Span>
+                        </TextBlock>
+                        <Slider Minimum="0" Maximum="500"
+                            HorizontalAlignment="Left"
+                            x:Name="EqualizerAmp7_5"
+                            Grid.Column="0"
+                            Grid.Row="1"
+                            Width="100"
+                            Orientation="Vertical"
+                            Value="{Binding selectedProfile.WheelBaseSettings.EqualizerAmp7_5, Mode=TwoWay}"
+                            TickFrequency="10"
+                            TickPlacement="Outside"
+                            SnapsTo="StepValues"
+                            StepFrequency="10"
+/>
+                        <Slider Minimum="0" Maximum="500"
+                        HorizontalAlignment="Left"
+                        x:Name="EqualizerAmp13"
+                        Grid.Column="1"
+                            Grid.Row="1"
+                        Width="100"
+                            Value="{Binding selectedProfile.WheelBaseSettings.EqualizerAmp13, Mode=TwoWay}"
+                        Orientation="Vertical"
+                            TickFrequency="10"
+TickPlacement="Outside"
+SnapsTo="StepValues"
+                            StepFrequency="10"
+/>
+                        <Slider Minimum="0" Maximum="500"
+                        HorizontalAlignment="Left"
+                        x:Name="EqualizerAmp22_5"
+                        Grid.Column="2"
+                            Grid.Row="1"
+                        Width="100"
+                        Orientation="Vertical"
+                            Value="{Binding selectedProfile.WheelBaseSettings.EqualizerAmp22_5, Mode=TwoWay}"
+                            TickFrequency="10"
+TickPlacement="Outside"
+SnapsTo="StepValues"
+                            StepFrequency="10"
+/>
+                        <Slider Minimum="0" Maximum="500"
+                        HorizontalAlignment="Left"
+                        x:Name="EqualizerAmp39"
+                        Grid.Column="3"
+                            Grid.Row="1"
+                        Width="100"
+                        Orientation="Vertical"
+                            Value="{Binding selectedProfile.WheelBaseSettings.EqualizerAmp39, Mode=TwoWay}"
+                            TickFrequency="10"
+TickPlacement="Outside"
+SnapsTo="StepValues"
+                            StepFrequency="10"
+/>
+                        <Slider Minimum="0" Maximum="500"
+                        HorizontalAlignment="Left"
+                        x:Name="EqualizerAmp55"
+                        Grid.Column="4"
+                            Grid.Row="1"
+                        Width="100"
+                        Orientation="Vertical"
+                            Value="{Binding selectedProfile.WheelBaseSettings.EqualizerAmp55, Mode=TwoWay}"
+                            TickFrequency="10"
+TickPlacement="Outside"
+SnapsTo="StepValues"
+                            StepFrequency="10"
+/>
+                        <Slider Minimum="0" Maximum="100"
+                        HorizontalAlignment="Left"
+                        x:Name="EqualizerAmp100"
+                        Grid.Column="5"
+                            Grid.Row="1"
+                        Width="100"
+                        Orientation="Vertical"
+                            Value="{Binding selectedProfile.WheelBaseSettings.EqualizerAmp100, Mode=TwoWay}"
+                            TickFrequency="10"
+TickPlacement="Outside"
+SnapsTo="StepValues"
+                            StepFrequency="10"
+/>
+                        <TextBlock Grid.Column="0" 
+                               Grid.Row="2"
+                               Text="{Binding ElementName=EqualizerAmp7_5, Path=Value}" 
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Left" />
+                        <TextBlock Grid.Column="1" 
+                               Grid.Row="2"
+                                Text="{Binding ElementName=EqualizerAmp13, Path=Value}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left" />
+                        <TextBlock Grid.Column="2" 
+                               Grid.Row="2"
+                                Text="{Binding ElementName=EqualizerAmp22_5, Path=Value}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left" />
+                        <TextBlock Grid.Column="3" 
+                               Grid.Row="2"
+                                Text="{Binding ElementName=EqualizerAmp39, Path=Value}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left" />
+                        <TextBlock Grid.Column="4" 
+                               Grid.Row="2"
+                                Text="{Binding ElementName=EqualizerAmp55, Path=Value}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left" />
+                        <TextBlock Grid.Column="5" 
+                               Grid.Row="2"
+                                Text="{Binding ElementName=EqualizerAmp100, Path=Value}" 
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left" />
+                    </Grid>
+
+                </controls:SettingsCard>
+            </StackPanel>
+        </ScrollView>
+
     </SplitView>
 
-    <!-- <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-       -->
-        <!-- 
-        for a modal popup to add a profile
-        <Button Content="Standard XAML button" Click="refreshProcessesButtonClick" Grid.Column="1" Grid.Row="0"/>
-        <ListBox ItemsSource="{x:Bind Processes}" />
-        -->
-    <!--
-        <Button Content="addProfile" Click="addProfileClicked" Grid.Column="1" Grid.Row="0"/>
-        
-        <ListBox ItemsSource="{x:Bind ProfileList}" />
     
-
-
-    </Grid>
-    -->
 </Page>

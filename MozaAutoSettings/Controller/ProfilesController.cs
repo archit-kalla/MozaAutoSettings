@@ -11,26 +11,33 @@ namespace MozaAutoSettings.Controller
     class ProfilesController
     {
         //public List<String> processes { get; set; }
-        public List<ProfileModel> ProfileList { get; set; } = new List<ProfileModel>();
+        private List<ProfileModel> ProfileList { get; set; } = new List<ProfileModel>();
 
         public ProfilesController() 
         {
+            readProfilesFromDirectory();
         }
 
         public void addProfile(ProfileModel profile)
         {
-            this.ProfileList.Add(profile);
+            ProfileList.Add(profile);
         }
 
         
         public void removeProfile(ProfileModel profile) 
         {
-            this.ProfileList.Remove(profile);
+            ProfileList.Remove(profile);
+        }
+
+        public List<ProfileModel> getProfiles()
+        {
+            return ProfileList;
         }
 
         //read json files from a directory and add content to profile list
-        public void readProfilesFromDirectory(string directory)
+        public void readProfilesFromDirectory()
         {
+            String directory = "C:\\Users\\Archit\\testsettings";
             if (System.IO.Directory.Exists(directory))
             {
                 string[] files = System.IO.Directory.GetFiles(directory, "*.json");
@@ -41,6 +48,7 @@ namespace MozaAutoSettings.Controller
                         ProfileModel profile = Newtonsoft.Json.JsonConvert.DeserializeObject<ProfileModel>(System.IO.File.ReadAllText(file));
                         if (profile != null)
                         {
+                            Debug.WriteLine("adding profile");
                             this.ProfileList.Add(profile);
                         }
                     }
@@ -51,19 +59,22 @@ namespace MozaAutoSettings.Controller
                 }
             }
         }
-
-        //public void refreshProceses()
-        //{
-        //    this.processes.Clear();
-        //    Process[] processes = Process.GetProcesses();
-        //    foreach (Process p in processes)
-        //    {
-        //        if (!String.IsNullOrEmpty(p.MainWindowTitle))
-        //        {
-        //            this.processes.Add(p.ProcessName);
-        //        }
-        //    }
-        //}
+        public static bool writeProfileToProfileDir(ProfileModel profile)
+        {
+            String filePath = System.IO.Path.Combine("C:\\Users\\Archit\\testsettings", profile.Name + ".json");
+            Debug.WriteLine("saveing to path: " + filePath);
+            try
+            {
+                string json = Newtonsoft.Json.JsonConvert.SerializeObject(profile);
+                System.IO.File.WriteAllText(filePath, json);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error writing profile to file: " + ex.Message);
+                return false;
+            }
+        }
 
     }
 }
