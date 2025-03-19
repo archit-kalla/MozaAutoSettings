@@ -19,6 +19,7 @@ using MozaAutoSettings.Services;
 using MozaAutoSettings.Dialogues;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using mozaAPI;
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
@@ -91,12 +92,40 @@ namespace MozaAutoSettings.Pages
             this.currentSettingsController.sendSettingsToWheelBase(this.currentWheelBaseSettings);
         }
 
-        private void Refresh_Clicked(object sender, RoutedEventArgs e)
+        private async void Refresh_Clicked(object sender, RoutedEventArgs e)
         {
             refreshCurrentSettings();
             debugWrite();
             //update the UI
-            this.DataContext = this;
+
+            ERRORCODE err = MozaAPIService.getErrStatus();
+            Debug.WriteLine("Error code: " + err);
+            if (err != ERRORCODE.NORMAL)
+            {
+                //pop up error dialogue
+                ContentDialog errorDialog = new ContentDialog();
+                errorDialog.XamlRoot = this.XamlRoot;
+                errorDialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+                errorDialog.Title = "Error";
+                errorDialog.Content = "Failed to refresh settings, please try again. If this does not work, verify Pithouse detects devices. Error code: "+ err;
+                errorDialog.PrimaryButtonText = "Ok";
+                await errorDialog.ShowAsync();
+                return;
+            }
+            else if (err== ERRORCODE.NORMAL && isSettingsValid == false)
+            {
+                //pop up error dialogue
+                ContentDialog errorDialog = new ContentDialog();
+                errorDialog.XamlRoot = this.XamlRoot;
+                errorDialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+                errorDialog.Title = "Error";
+                errorDialog.Content = "Failed to refresh settings, please try again. If this does not work, verify Pithouse detects devices";
+                errorDialog.PrimaryButtonText = "Ok";
+                await errorDialog.ShowAsync();
+                return;
+            }
+
+                this.DataContext = this;
         }
 
         private async void Save_Clicked(object sender, RoutedEventArgs e)
