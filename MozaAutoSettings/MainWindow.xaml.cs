@@ -30,12 +30,6 @@ namespace MozaAutoSettings
         public MainWindow()
         {
             this.InitializeComponent();
-
-            //contentFrame.Navigate(
-            //           typeof(MozaAutoSettings.Pages.CurrentSettings),
-            //           null,
-            //           new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo()
-            //           );
             MozaAPIService.Initialize();
         }
 
@@ -47,9 +41,7 @@ namespace MozaAutoSettings
 
             switch ((string)item.Tag)
             {
-                case "BlankPage1":
-                    contentFrame.Navigate(typeof(BlankPage1));
-                    break;
+
                 case "Profiles":
                     contentFrame.Navigate(typeof(Profiles),
                         null,

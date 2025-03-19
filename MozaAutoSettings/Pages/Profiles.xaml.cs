@@ -31,7 +31,20 @@ namespace MozaAutoSettings.Pages
     {
         private ProfilesController _profilesController = new ProfilesController();
 
-        public List<ProfileModel> ProfileList;
+        
+        public List<int> wheelAngles = new List<int>() { 360, 540, 900, 1080, 1440, 1800 };
+        public List<int> roadSensitivities = new List<int>() { 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50 };
+
+        private List<ProfileModel> _ProfileList;
+        public List<ProfileModel> ProfileList
+        {
+            get => _ProfileList;
+            set
+            {
+                _ProfileList = value;
+                OnPropertyChanged();
+            }
+        }
 
         private ProfileModel _selectedProfile;
         public ProfileModel selectedProfile
@@ -55,15 +68,14 @@ namespace MozaAutoSettings.Pages
             }
         }
 
-        public List<int> wheelAngles = new List<int>() { 360, 540, 900, 1080, 1440, 1800 };
-        public List<int> roadSensitivities = new List<int>() { 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50 };
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+
         public Profiles()
         {
             this.InitializeComponent();
@@ -85,32 +97,19 @@ namespace MozaAutoSettings.Pages
         {
             //refreshCurrentSettings();
             updateProfilesList();
-            this.DataContext = this;
+            this.DataContext = this; //probably not needed but just in case
         }
 
         private void Save_Clicked(object sender, RoutedEventArgs e)
         {
             //saveProfile();
             if (selectedProfile != null)
-            {
+            {   
                 _profilesController.removeProfile(selectedProfile);
                 _profilesController.addProfile(selectedProfile);
                 updateProfilesList();
             }
         }
-
-
-        //private void ProfileListView_ItemClick(object sender, ItemClickEventArgs e)
-        //{
-        //    this.selectedProfile = (ProfileModel)profileListView.SelectedItem;
-        //    this.isProfileSelected = true;
-
-        //    if (selectedProfile != null)
-        //    {
-        //        Debug.WriteLine("Selected profile: " + selectedProfile.Name);
-        //    }
-        //    this.DataContext = this;
-        //}
 
         private void profileListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

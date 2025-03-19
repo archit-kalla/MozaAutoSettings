@@ -20,12 +20,21 @@ namespace MozaAutoSettings.Controller
 
         public void addProfile(ProfileModel profile)
         {
-            ProfileList.Add(profile);
+            //add profile file to directory
+            String filePath = System.IO.Path.Combine("C:\\Users\\Archit\\testsettings", profile.Name + ".json");
+
+            writeProfileToProfileDir(profile);
         }
 
-        
+
         public void removeProfile(ProfileModel profile) 
         {
+            //remove profile file from directory
+            String filePath = System.IO.Path.Combine("C:\\Users\\Archit\\testsettings", profile.Name + ".json");
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
             ProfileList.Remove(profile);
         }
 
@@ -76,5 +85,17 @@ namespace MozaAutoSettings.Controller
             }
         }
 
+        //look through profile list and if process name matches, return true
+        public bool isProcessInProfileList(string processName)
+        {
+            foreach (ProfileModel profile in ProfileList)
+            {
+                if (profile.Process == processName)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

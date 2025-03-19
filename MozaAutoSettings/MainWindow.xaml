@@ -27,8 +27,6 @@
                         <FontIcon Glyph="&#xE804;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Icon="Save" Content="Menu Item2" Tag="BlankPage1" />
-                <NavigationViewItem Icon="Download" Content="Menu Item4" Tag="SamplePage4" />
             </NavigationView.MenuItems>
             <Frame x:Name="contentFrame"/>
         </NavigationView>
