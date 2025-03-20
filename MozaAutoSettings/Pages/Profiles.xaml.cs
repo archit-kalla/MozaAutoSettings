@@ -112,15 +112,26 @@ namespace MozaAutoSettings.Pages
             updateProfilesList();
         }
 
-        private void Save_Clicked(object sender, RoutedEventArgs e)
+        private async void Save_Clicked(object sender, RoutedEventArgs e)
         {
             //saveProfile();
             if (selectedProfile != null)
-            {   
+            {
+                isProfileSelected = false;
                 _profilesController.removeProfile(selectedProfile);
                 _profilesController.addProfile(selectedProfile);
                 updateProfilesList();
             }
+
+            //show success message
+            ContentDialog successDialog = new ContentDialog();
+            successDialog.XamlRoot = this.XamlRoot;
+            successDialog.Title = "Success";
+            successDialog.Content = "Profile saved successfully";
+            successDialog.PrimaryButtonText = "Ok";
+
+            await successDialog.ShowAsync();
+
         }
 
 

@@ -83,9 +83,17 @@ namespace MozaAutoSettings.Pages
             this.isSettingsValid = MozaAPIService.validateSettings(this.currentWheelBaseSettings);
             this.DataContext = this;
         }
-        private void Apply_Clicked(object sender, RoutedEventArgs e)
+        private async void Apply_Clicked(object sender, RoutedEventArgs e)
         {
-            this.currentSettingsController.sendSettingsToWheelBase(this.currentWheelBaseSettings);
+            this.currentSettingsController.sendSettingsToWheelBase(this.currentWheelBaseSettings); //TODO add error handling
+            //show success message
+            ContentDialog successDialog = new ContentDialog();
+            successDialog.XamlRoot = this.XamlRoot;
+            successDialog.Title = "Success";
+            successDialog.Content = "Settings applied successfully";
+            successDialog.PrimaryButtonText = "Ok";
+
+            successDialog.ShowAsync();
         }
 
         private async void Refresh_Clicked(object sender, RoutedEventArgs e)
