@@ -145,5 +145,14 @@ namespace MozaAutoSettings.Pages
             }
         }
 
+        private void Delete_Clicked(object sender, RoutedEventArgs e)
+        {
+            if (selectedProfile != null)
+            {
+                _profilesController.removeProfile(selectedProfile);
+                updateProfilesList();
+            }
+        }
+
     }
 }

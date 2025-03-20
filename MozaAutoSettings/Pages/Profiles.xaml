@@ -52,16 +52,22 @@
                             Margin="0,10,0,10"/>
                 <!-- to do -->
                 <StackPanel Orientation="Horizontal">
-                    <Button Style="{StaticResource AccentButtonStyle}" Click="Save_Clicked" HorizontalAlignment="Right" IsEnabled="{Binding isProfileSelected}">
+                    <Button Style="{StaticResource AccentButtonStyle}" Click="Save_Clicked" HorizontalAlignment="Center" IsEnabled="{Binding isProfileSelected}">
                         <StackPanel Orientation="Horizontal">
-                            <FontIcon Glyph="&#xE792;" />
-                            <TextBlock Text="Save to profile" Margin= "10,0,10,0"/>
+                            <FontIcon Glyph="&#xE74E;" />
+                            <TextBlock Text="Save" Margin= "10,0,10,0"/>
                         </StackPanel>
                     </Button>
-                    <Button Click="Apply_Clicked" HorizontalAlignment="Right" Margin= "10,0,10,0" IsEnabled="{Binding isProfileSelected}">
+                    <Button Click="Apply_Clicked" HorizontalAlignment="Center" Margin= "10,0,10,0" IsEnabled="{Binding isProfileSelected}">
                         <StackPanel Orientation="Horizontal">
                             <FontIcon Glyph="&#xE8FB;" />
                             <TextBlock Text="Save and Apply" Margin= "10,0,10,0"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Click="Delete_Clicked" HorizontalAlignment="Center" Margin= "10,0,10,0" IsEnabled="{Binding isProfileSelected}">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xECC9;" />
+                            <TextBlock Text="Remove Profile" Margin= "10,0,10,0"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>
