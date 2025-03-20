@@ -133,7 +133,6 @@ namespace MozaAutoSettings.Pages
                 return;
             }
 
-                this.DataContext = this;
         }
 
         private async void Save_Clicked(object sender, RoutedEventArgs e)
