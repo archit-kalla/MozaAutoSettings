@@ -217,6 +217,37 @@ namespace MozaAutoSettings.Pages
             profile.Process = saveToProfileDialogue.SelectedFileName;
             profile.WheelBaseSettings = this.currentWheelBaseSettings;
 
+            //refresh profilelists
+            ProfilesController.readProfilesFromDirectory();
+            //check if profile already exists
+            if (ProfilesController.getProfiles().Any(p => p.Name == profile.Name))
+            {
+                //pop up error dialogue
+                ContentDialog errorDialog = new ContentDialog();
+                errorDialog.XamlRoot = this.XamlRoot;
+                errorDialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+                errorDialog.Title = "Error";
+                errorDialog.Content = "Profile already exists";
+                errorDialog.PrimaryButtonText = "Ok";
+                await errorDialog.ShowAsync();
+                return;
+            }
+
+            //check if profile has same process as another profile
+            if (ProfilesController.getProfile(profile.Process)!= null)
+            {
+                //pop up error dialogue
+                ContentDialog errorDialog = new ContentDialog();
+                errorDialog.XamlRoot = this.XamlRoot;
+                errorDialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+                errorDialog.Title = "Error";
+                errorDialog.Content = "Profile with same process already exists";
+                errorDialog.PrimaryButtonText = "Ok";
+                await errorDialog.ShowAsync();
+                return;
+            }
+
+
             bool isWritten = ProfilesController.writeProfileToProfileDir(profile);
             //
             if (!isWritten)

@@ -33,12 +33,14 @@ namespace MozaAutoSettings.Services
 
         private async Task CheckOpenProgramsAsync(CancellationToken cancellationToken)
         {
+            //update the profile list
+            ProfilesController.readProfilesFromDirectory();
             while (!cancellationToken.IsCancellationRequested)
             {
                 var openPrograms = GetOpenPrograms();
                 foreach (var program in openPrograms)
                 {
-                    var profile = _profilesController.getProfile(program);
+                    var profile = ProfilesController.getProfile(program);
                     if (profile!=null)
                     {
                         if (currentlyLoadedProfile.Name != profile.Name)
@@ -53,6 +55,10 @@ namespace MozaAutoSettings.Services
                             {
                                 Debug.WriteLine($"Failed to apply profile {profile.Name}: {result.Item1}");
                             }
+                        }
+                        else
+                        {
+                            Debug.WriteLine($"Profile {profile.Name} is already applied.");
                         }
 
                     }

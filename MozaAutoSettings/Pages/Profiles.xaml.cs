@@ -19,6 +19,7 @@ using MozaAutoSettings.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Application = Microsoft.UI.Xaml.Application;
+using System.Collections.ObjectModel;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -36,8 +37,8 @@ namespace MozaAutoSettings.Pages
         public List<int> wheelAngles = new List<int>() { 360, 540, 900, 1080, 1440, 1800 };
         public List<int> roadSensitivities = new List<int>() { 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50 };
 
-        private List<ProfileModel> _ProfileList;
-        public List<ProfileModel> ProfileList
+        private ObservableCollection<ProfileModel> _ProfileList;
+        public ObservableCollection<ProfileModel> ProfileList
         {
             get => _ProfileList;
             set
@@ -88,9 +89,8 @@ namespace MozaAutoSettings.Pages
 
         private void updateProfilesList()
         {
-
-            _profilesController.readProfilesFromDirectory();
-            this.ProfileList = _profilesController.getProfiles();
+            ProfilesController.readProfilesFromDirectory();
+            this.ProfileList = new ObservableCollection<ProfileModel>(ProfilesController.getProfiles());
         }
 
 

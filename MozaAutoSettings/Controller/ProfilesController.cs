@@ -39,13 +39,13 @@ namespace MozaAutoSettings.Controller
             ProfileList.Remove(profile);
         }
 
-        public List<ProfileModel> getProfiles()
+        public static List<ProfileModel> getProfiles()
         {
             return ProfileList;
         }
 
         //read json files from a directory and add content to profile list
-        public void readProfilesFromDirectory()
+        public static void readProfilesFromDirectory()
         {
             String directory = "C:\\Users\\Archit\\testsettings";
             if (System.IO.Directory.Exists(directory))
@@ -118,7 +118,7 @@ namespace MozaAutoSettings.Controller
         }
 
         //look through profile list and if process name matches, return true
-        public ProfileModel getProfile(string processName)
+        public static ProfileModel getProfile(string processName)
         {
             foreach (ProfileModel profile in ProfileList)
             {
