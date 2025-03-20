@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
+using MozaAutoSettings.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -37,6 +38,7 @@ namespace MozaAutoSettings
 
         // store the window object
         private Window? m_window;
+        private ProfileLoaderService _profileLoaderService;
 
         /// <summary>
         /// Invoked when the application is launched.
@@ -46,6 +48,8 @@ namespace MozaAutoSettings
         {
             m_window = new MainWindow();
             m_window.Activate();
+            // Start the ProfileLoaderService
+            _profileLoaderService = new ProfileLoaderService();
         }
 
         public static Window GetWindow()

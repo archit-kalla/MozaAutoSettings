@@ -19,6 +19,24 @@ namespace MozaAutoSettings.Services
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern bool SetDllDirectory(string lpPathName);
 
+        static List<string> callOrder = new List<string>()
+        {
+            "setMotorLimitAngle",
+            //"setMotorRoadSensitivity",
+            "setMotorFfbStrength",
+            "setMotorLimitWheelSpeed",
+            "setMotorSpringStrength",
+            "setMotorNaturalDamper",
+            "setMotorNaturalFriction",
+            "setMotorSpeedDamping",
+            "setMotorPeakTorque",
+            //"setMotorNaturalInertiaRatio",
+            "setMotorNaturalInertia",
+            "setMotorSpeedDampingStartPoint",
+            "setMotorHandsOffProtection",
+            "setMotorFfbReverse",
+            "setMotorEqualizerAmp"
+        };
         private static void LoadUnmanagedDll()
         {
             SetDllDirectory(@"C:\Users\Archit\source\repos\MozaAutoSettings\MozaAutoSettings\lib"); //TODO change this to dynamic path
@@ -39,25 +57,28 @@ namespace MozaAutoSettings.Services
         }
         public static void sendSettingsToWheelBase(WheelBaseSettingsModel wheelBaseSettings)
         {
-                
+            List<ERRORCODE> errList = new List<ERRORCODE>();
+
             if (err == ERRORCODE.NOINSTALLSDK)
             {
                 Initialize();
             }
-            err = mozaAPI.mozaAPI.setMotorLimitAngle(wheelBaseSettings.MotorLimitAngle.Item1, wheelBaseSettings.MotorLimitAngle.Item2);
-            err = mozaAPI.mozaAPI.setMotorRoadSensitivity(wheelBaseSettings.MotorRoadSensitivity);
-            err = mozaAPI.mozaAPI.setMotorFfbStrength(wheelBaseSettings.MotorFfbStrength);
-            err = mozaAPI.mozaAPI.setMotorLimitWheelSpeed(wheelBaseSettings.MotorLimitWheelSpeed);
-            err = mozaAPI.mozaAPI.setMotorSpringStrength(wheelBaseSettings.MotorSpringStrength);
-            err = mozaAPI.mozaAPI.setMotorNaturalDamper(wheelBaseSettings.MotorNaturalDamper);
-            err = mozaAPI.mozaAPI.setMotorNaturalFriction(wheelBaseSettings.MotorNaturalFriction);
-            err = mozaAPI.mozaAPI.setMotorSpeedDamping(wheelBaseSettings.MotorSpeedDamping);
-            err = mozaAPI.mozaAPI.setMotorPeakTorque(wheelBaseSettings.MotorPeakTorque);
+            errList.Add(mozaAPI.mozaAPI.setMotorLimitAngle(wheelBaseSettings.MotorLimitAngle.Item1, wheelBaseSettings.MotorLimitAngle.Item2));
+
+
+            //err = mozaAPI.mozaAPI.setMotorRoadSensitivity(wheelBaseSettings.MotorRoadSensitivity);
+            errList.Add(mozaAPI.mozaAPI.setMotorFfbStrength(wheelBaseSettings.MotorFfbStrength));
+            errList.Add(mozaAPI.mozaAPI.setMotorLimitWheelSpeed(wheelBaseSettings.MotorLimitWheelSpeed));
+            errList.Add(mozaAPI.mozaAPI.setMotorSpringStrength(wheelBaseSettings.MotorSpringStrength));
+            errList.Add(mozaAPI.mozaAPI.setMotorNaturalDamper(wheelBaseSettings.MotorNaturalDamper));
+            errList.Add(mozaAPI.mozaAPI.setMotorNaturalFriction(wheelBaseSettings.MotorNaturalFriction));
+            errList.Add(mozaAPI.mozaAPI.setMotorSpeedDamping(wheelBaseSettings.MotorSpeedDamping));
+            errList.Add(mozaAPI.mozaAPI.setMotorPeakTorque(wheelBaseSettings.MotorPeakTorque));
             //err = mozaAPI.mozaAPI.setMotorNaturalInertiaRatio(wheelBaseSettings.MotorNaturalInertiaRatio);
-            err = mozaAPI.mozaAPI.setMotorNaturalInertia(wheelBaseSettings.MotorNaturalInertia);
-            err = mozaAPI.mozaAPI.setMotorSpeedDampingStartPoint(wheelBaseSettings.MotorSpeedDampingStartPoint);
-            err = mozaAPI.mozaAPI.setMotorHandsOffProtection(wheelBaseSettings.MotorHandsOffProtection);
-            err = mozaAPI.mozaAPI.setMotorFfbReverse(wheelBaseSettings.MotorFfbReverse);
+            errList.Add(mozaAPI.mozaAPI.setMotorNaturalInertia(wheelBaseSettings.MotorNaturalInertia));
+            errList.Add(mozaAPI.mozaAPI.setMotorSpeedDampingStartPoint(wheelBaseSettings.MotorSpeedDampingStartPoint));
+            errList.Add(mozaAPI.mozaAPI.setMotorHandsOffProtection(wheelBaseSettings.MotorHandsOffProtection));
+            errList.Add(mozaAPI.mozaAPI.setMotorFfbReverse(wheelBaseSettings.MotorFfbReverse));
 
             //packs the individual equalizer amps to a dictionary
             wheelBaseSettings.MotorEqualizerAmp = new Dictionary<string, int>
@@ -69,17 +90,19 @@ namespace MozaAutoSettings.Services
                 { "EqualizerAmp55", wheelBaseSettings.EqualizerAmp55 },
                 { "EqualizerAmp100", wheelBaseSettings.EqualizerAmp100 }
             };
-            err = mozaAPI.mozaAPI.setMotorEqualizerAmp(wheelBaseSettings.MotorEqualizerAmp);
+            errList.Add(mozaAPI.mozaAPI.setMotorEqualizerAmp(wheelBaseSettings.MotorEqualizerAmp));
 
 
-            if (err != ERRORCODE.NORMAL)
+            //find which call errors
+            for (int i = 0; i < errList.Count; i++)
             {
-                Debug.WriteLine("Error sending settings to wheelbase: " + err);
+                ERRORCODE error = errList[i];
+                if (error != ERRORCODE.NORMAL)
+                {
+                    Debug.WriteLine("Error: " + error +" "+ callOrder[i]);
+                }
             }
-            else
-            {
-                Debug.WriteLine("Settings sent to wheelbase successfully.");
-            }
+
 
 
         }
@@ -90,6 +113,7 @@ namespace MozaAutoSettings.Services
             {
                 Initialize();
             }
+
 
             var wheelBaseSettings = new WheelBaseSettingsModel
             {

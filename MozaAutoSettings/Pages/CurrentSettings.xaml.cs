@@ -73,10 +73,6 @@ namespace MozaAutoSettings.Pages
             debugWrite();
             this.InitializeComponent();
 
-
-
-
-
         }
 
         private void refreshCurrentSettings()
@@ -119,7 +115,19 @@ namespace MozaAutoSettings.Pages
                 errorDialog.XamlRoot = this.XamlRoot;
                 errorDialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
                 errorDialog.Title = "Error";
-                errorDialog.Content = "Failed to refresh settings, please try again. If this does not work, verify Pithouse detects devices";
+                errorDialog.Content = "Failed to refresh settings, please try again";
+                errorDialog.PrimaryButtonText = "Ok";
+                await errorDialog.ShowAsync();
+                return;
+            }
+            else
+            {
+                //pop up error dialogue
+                ContentDialog errorDialog = new ContentDialog();
+                errorDialog.XamlRoot = this.XamlRoot;
+                errorDialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+                errorDialog.Title = "Normal";
+                errorDialog.Content = "gg";
                 errorDialog.PrimaryButtonText = "Ok";
                 await errorDialog.ShowAsync();
                 return;

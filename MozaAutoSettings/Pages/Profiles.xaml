@@ -8,7 +8,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local1="using:MozaAutoSettings.Models" xmlns:local2="using:MozaAutoSettings.Converters"
     xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    NavigationCacheMode="Enabled">
 
     <Page.Resources>
         <DataTemplate x:Key="ProfileListTemplate" x:DataType="local1:ProfileModel" >
@@ -38,13 +39,11 @@
 
 
         <ScrollView>
-
             <StackPanel Orientation="Vertical" 
             HorizontalAlignment="Left" 
             VerticalAlignment="Top" 
             Margin="30,40,20,10" 
             Spacing="4">
-
                 <TextBlock Text="{Binding selectedProfile.Name}" 
                         FontSize="30"
                         Margin="0,10,0,10"/>
@@ -52,16 +51,21 @@
                             FontSize="20"
                             Margin="0,10,0,10"/>
                 <!-- to do -->
-
-                <Button Style="{StaticResource AccentButtonStyle}" Click="Save_Clicked" HorizontalAlignment="Right" >
-                    <StackPanel Orientation="Horizontal">
-                        <FontIcon Glyph="&#xE792;" />
-                        <TextBlock Text="Save to profile" Margin= "10,0,10,0"/>
-                    </StackPanel>
-                </Button>
-
-
-
+                <StackPanel Orientation="Horizontal">
+                    <Button Style="{StaticResource AccentButtonStyle}" Click="Save_Clicked" HorizontalAlignment="Right" IsEnabled="{Binding isProfileSelected}">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xE792;" />
+                            <TextBlock Text="Save to profile" Margin= "10,0,10,0"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Click="Apply_Clicked" HorizontalAlignment="Right" Margin= "10,0,10,0" IsEnabled="{Binding isProfileSelected}">
+                        <StackPanel Orientation="Horizontal">
+                            <FontIcon Glyph="&#xE8FB;" />
+                            <TextBlock Text="Save and Apply" Margin= "10,0,10,0"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                
 
                 <controls:SettingsExpander Description="Basic Controls for FFB strength, Wheel Angle, and more"
                                    Header="Basic Settings"
@@ -255,13 +259,13 @@
                             </Grid>
                         </controls:SettingsCard>
                         <controls:SettingsCard Header="Start of Speed Dependent Damping" 
-                                       Description="Point at which speed dependent damping occurs. In KM/H">
+                                       Description="Point at which speed dependent damping occurs. In KM/H, min 100 although api and moza says 0">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="60"/>
                                 </Grid.ColumnDefinitions>
-                                <Slider Minimum="0" Maximum="400"
+                                <Slider Minimum="100" Maximum="400"
                                 HorizontalAlignment="Left"
                                 x:Name="StartSpeedDependentDamping"
                                 Grid.Column="0"

@@ -18,6 +18,7 @@ using MozaAutoSettings.Controller;
 using MozaAutoSettings.Models;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Application = Microsoft.UI.Xaml.Application;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -69,7 +70,6 @@ namespace MozaAutoSettings.Pages
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -84,20 +84,32 @@ namespace MozaAutoSettings.Pages
             this.isProfileSelected = false;
             selectedProfile = new ProfileModel();
             this.DataContext = this;
-
         }
 
         private void updateProfilesList()
         {
+
+            _profilesController.readProfilesFromDirectory();
             this.ProfileList = _profilesController.getProfiles();
-            profileListView.ItemsSource = this.ProfileList;
+        }
+
+
+        private void profileListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (profileListView.SelectedItem != null)
+            {
+                this.selectedProfile = (ProfileModel)profileListView.SelectedItem;
+                this.isProfileSelected = true;
+                if (selectedProfile != null)
+                {
+                    Debug.WriteLine("Selected profile: " + selectedProfile.Name);
+                }
+            }
         }
 
         private void Refresh_Clicked(object sender, RoutedEventArgs e)
         {
-            //refreshCurrentSettings();
             updateProfilesList();
-            this.DataContext = this; //probably not needed but just in case
         }
 
         private void Save_Clicked(object sender, RoutedEventArgs e)
@@ -111,20 +123,27 @@ namespace MozaAutoSettings.Pages
             }
         }
 
-        private void profileListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        private async void Apply_Clicked(object sender, RoutedEventArgs e)
         {
-            if (profileListView.SelectedItem != null)
+            Save_Clicked(sender, e);
+            //saveProfile();
+            Tuple<string, bool> result = _profilesController.applyProfile(selectedProfile);
+            if (!result.Item2)
             {
-                this.selectedProfile = (ProfileModel)profileListView.SelectedItem;
-                this.isProfileSelected = true;
-                if (selectedProfile != null)
-                {
-                    Debug.WriteLine("Selected profile: " + selectedProfile.Name);
-                }
-                this.DataContext = this;
+                //show error message
+                Debug.WriteLine("Error applying profile: " + result.Item1);
+
+                ContentDialog errorDialog = new ContentDialog();
+                errorDialog.XamlRoot = this.XamlRoot;
+                errorDialog.Title = "Error";
+                errorDialog.Content = result.Item1;
+                errorDialog.PrimaryButtonText = "Ok";
+
+                await errorDialog.ShowAsync();
+                return;
             }
-
-
         }
+
     }
 }

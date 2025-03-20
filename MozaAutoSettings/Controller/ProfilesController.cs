@@ -1,4 +1,6 @@
-﻿using MozaAutoSettings.Models;
+﻿using mozaAPI;
+using MozaAutoSettings.Models;
+using MozaAutoSettings.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,7 +13,7 @@ namespace MozaAutoSettings.Controller
     class ProfilesController
     {
         //public List<String> processes { get; set; }
-        private List<ProfileModel> ProfileList { get; set; } = new List<ProfileModel>();
+        private static List<ProfileModel> ProfileList { get; set; } = new List<ProfileModel>();
 
         public ProfilesController() 
         {
@@ -25,7 +27,6 @@ namespace MozaAutoSettings.Controller
 
             writeProfileToProfileDir(profile);
         }
-
 
         public void removeProfile(ProfileModel profile) 
         {
@@ -57,8 +58,14 @@ namespace MozaAutoSettings.Controller
                         ProfileModel profile = Newtonsoft.Json.JsonConvert.DeserializeObject<ProfileModel>(System.IO.File.ReadAllText(file));
                         if (profile != null)
                         {
+                            //check if profile already exists in list
+                            if (ProfileList.Any(p => p.Name == profile.Name))
+                            {
+                                Debug.WriteLine("profile already exists");
+                                continue;
+                            }
                             Debug.WriteLine("adding profile");
-                            this.ProfileList.Add(profile);
+                            ProfileList.Add(profile);
                         }
                     }
                     catch (Exception ex)
@@ -68,6 +75,7 @@ namespace MozaAutoSettings.Controller
                 }
             }
         }
+
         public static bool writeProfileToProfileDir(ProfileModel profile)
         {
             String filePath = System.IO.Path.Combine("C:\\Users\\Archit\\testsettings", profile.Name + ".json");
@@ -85,17 +93,41 @@ namespace MozaAutoSettings.Controller
             }
         }
 
+        public Tuple<string,bool> applyProfile(ProfileModel profile)
+        {
+            //apply profile settings to the game
+            if (profile == null)
+            {
+                return new Tuple<string, bool>("Profile is null", false);
+            }
+            if (profile.WheelBaseSettings == null)
+            {
+                return new Tuple<string, bool>("WheelBaseSettings is null", false);
+            }
+            bool settingsValid = MozaAPIService.validateSettings(profile.WheelBaseSettings);
+            MozaAPIService.sendSettingsToWheelBase(profile.WheelBaseSettings);
+            ERRORCODE err = MozaAPIService.getErrStatus();
+            if(err != ERRORCODE.NORMAL)
+            {
+                return new Tuple<string, bool>(err.ToString(), false);
+            }
+            else
+            {
+                return new Tuple<string, bool>("Profile applied successfully", true);
+            }
+        }
+
         //look through profile list and if process name matches, return true
-        public bool isProcessInProfileList(string processName)
+        public ProfileModel getProfile(string processName)
         {
             foreach (ProfileModel profile in ProfileList)
             {
                 if (profile.Process == processName)
                 {
-                    return true;
+                    return profile;
                 }
             }
-            return false;
+            return null;
         }
     }
 }

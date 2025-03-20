@@ -8,7 +8,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:local1="using:MozaAutoSettings.Converters"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    NavigationCacheMode="Enabled">
     <Page.Resources>
         <local1:IntegerConverter x:Key="IntegerConverter"/>
         <local1:IntToBoolConverter x:Key="IntToBoolConverter"/>
@@ -246,13 +247,13 @@
                     </Grid>
                 </controls:SettingsCard>
                 <controls:SettingsCard Header="Start of Speed Dependent Damping" 
-                                       Description="Point at which speed dependent damping occurs. In KM/H">
+                                       Description="Point at which speed dependent damping occurs. In KM/H. min 100 although api and moza says 0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="60"/>
                         </Grid.ColumnDefinitions>
-                        <Slider Minimum="0" Maximum="400"
+                        <Slider Minimum="100" Maximum="400"
                                 HorizontalAlignment="Left"
                                 x:Name="StartSpeedDependentDamping"
                                 Grid.Column="0"
