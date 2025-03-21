@@ -1,4 +1,5 @@
-﻿using MozaAutoSettings.Models;
+﻿using mozaAPI;
+using MozaAutoSettings.Models;
 using MozaAutoSettings.Services;
 using System;
 using System.Collections.Generic;
@@ -35,9 +36,14 @@ namespace MozaAutoSettings.Controller
         }
 
 
-        public void sendSettingsToWheelBase(WheelBaseSettingsModel wheelBaseSettings)
+        public Tuple<string,bool> sendSettingsToWheelBase(WheelBaseSettingsModel wheelBaseSettings)
         {
-            MozaAPIService.sendSettingsToWheelBase(wheelBaseSettings);
+            ERRORCODE err = MozaAPIService.sendSettingsToWheelBase(wheelBaseSettings);
+            if (err != ERRORCODE.NORMAL)
+            {
+                return new Tuple<string, bool>("Error sending settings to wheel base: " + err.ToString(), false);
+            }
+            return new Tuple<string, bool>("Settings sent successfully", true);
         }
 
     }

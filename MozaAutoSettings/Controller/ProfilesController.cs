@@ -14,7 +14,7 @@ namespace MozaAutoSettings.Controller
     {
         //public List<String> processes { get; set; }
         private static List<ProfileModel> ProfileList { get; set; } = new List<ProfileModel>();
-
+        private static readonly string ProfileDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "profiles");
         public ProfilesController() 
         {
             readProfilesFromDirectory();
@@ -23,7 +23,7 @@ namespace MozaAutoSettings.Controller
         public void addProfile(ProfileModel profile)
         {
             //add profile file to directory
-            String filePath = System.IO.Path.Combine("C:\\Users\\Archit\\testsettings", profile.Name + ".json");
+            String filePath = System.IO.Path.Combine(ProfileDirectory, profile.Name + ".json");
 
             writeProfileToProfileDir(profile);
         }
@@ -31,7 +31,7 @@ namespace MozaAutoSettings.Controller
         public void removeProfile(ProfileModel profile) 
         {
             //remove profile file from directory
-            String filePath = System.IO.Path.Combine("C:\\Users\\Archit\\testsettings", profile.Name + ".json");
+            String filePath = System.IO.Path.Combine(ProfileDirectory, profile.Name + ".json");
             if (System.IO.File.Exists(filePath))
             {
                 System.IO.File.Delete(filePath);
@@ -47,10 +47,9 @@ namespace MozaAutoSettings.Controller
         //read json files from a directory and add content to profile list
         public static void readProfilesFromDirectory()
         {
-            String directory = "C:\\Users\\Archit\\testsettings";
-            if (System.IO.Directory.Exists(directory))
+            if (System.IO.Directory.Exists(ProfileDirectory))
             {
-                string[] files = System.IO.Directory.GetFiles(directory, "*.json");
+                string[] files = System.IO.Directory.GetFiles(ProfileDirectory, "*.json");
                 foreach (string file in files)
                 {
                     try
@@ -78,7 +77,7 @@ namespace MozaAutoSettings.Controller
 
         public static bool writeProfileToProfileDir(ProfileModel profile)
         {
-            String filePath = System.IO.Path.Combine("C:\\Users\\Archit\\testsettings", profile.Name + ".json");
+            String filePath = System.IO.Path.Combine(ProfileDirectory, profile.Name + ".json");
             Debug.WriteLine("saveing to path: " + filePath);
             try
             {
@@ -105,8 +104,7 @@ namespace MozaAutoSettings.Controller
                 return new Tuple<string, bool>("WheelBaseSettings is null", false);
             }
             bool settingsValid = MozaAPIService.validateSettings(profile.WheelBaseSettings);
-            MozaAPIService.sendSettingsToWheelBase(profile.WheelBaseSettings);
-            ERRORCODE err = MozaAPIService.getErrStatus();
+            ERRORCODE err = MozaAPIService.sendSettingsToWheelBase(profile.WheelBaseSettings);
             if(err != ERRORCODE.NORMAL)
             {
                 return new Tuple<string, bool>(err.ToString(), false);

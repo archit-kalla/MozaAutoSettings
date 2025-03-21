@@ -85,15 +85,32 @@ namespace MozaAutoSettings.Pages
         }
         private async void Apply_Clicked(object sender, RoutedEventArgs e)
         {
-            this.currentSettingsController.sendSettingsToWheelBase(this.currentWheelBaseSettings); //TODO add error handling
-            //show success message
-            ContentDialog successDialog = new ContentDialog();
-            successDialog.XamlRoot = this.XamlRoot;
-            successDialog.Title = "Success";
-            successDialog.Content = "Settings applied successfully";
-            successDialog.PrimaryButtonText = "Ok";
+            Tuple<string,bool> errStatus = this.currentSettingsController.sendSettingsToWheelBase(this.currentWheelBaseSettings); //TODO add error handling
+            if (errStatus.Item2 == false)
+            {
+                //pop up error dialogue
+                ContentDialog errorDialog = new ContentDialog();
+                errorDialog.XamlRoot = this.XamlRoot;
+                errorDialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
+                errorDialog.Title = "Error";
+                errorDialog.Content = errStatus.Item1;
+                errorDialog.PrimaryButtonText = "Ok";
+                await errorDialog.ShowAsync();
+                return;
+            }
+            else
+            {
+                //show success message
+                ContentDialog successDialog = new ContentDialog();
+                successDialog.XamlRoot = this.XamlRoot;
+                successDialog.Title = "Success";
+                successDialog.Content = "Settings applied successfully";
+                successDialog.PrimaryButtonText = "Ok";
 
-            successDialog.ShowAsync();
+                await successDialog.ShowAsync();
+                return;
+            }
+                
         }
 
         private async void Refresh_Clicked(object sender, RoutedEventArgs e)

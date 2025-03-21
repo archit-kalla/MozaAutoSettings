@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35825.156
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MozaAutoSettings", "MozaAutoSettings\MozaAutoSettings.csproj", "{4A028ED3-74C9-44E4-9132-D1D8E43A90CA}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MozaAutoSettingsInstaller", "MozaAutoSettingsInstaller\MozaAutoSettingsInstaller.vdproj", "{63A6EF19-BA04-FE49-AD1F-B20E9755785B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -33,6 +35,14 @@ Global
 		{4A028ED3-74C9-44E4-9132-D1D8E43A90CA}.Release|x86.ActiveCfg = Release|x86
 		{4A028ED3-74C9-44E4-9132-D1D8E43A90CA}.Release|x86.Build.0 = Release|x86
 		{4A028ED3-74C9-44E4-9132-D1D8E43A90CA}.Release|x86.Deploy.0 = Release|x86
+		{63A6EF19-BA04-FE49-AD1F-B20E9755785B}.Debug|ARM64.ActiveCfg = Debug
+		{63A6EF19-BA04-FE49-AD1F-B20E9755785B}.Debug|x64.ActiveCfg = Debug
+		{63A6EF19-BA04-FE49-AD1F-B20E9755785B}.Debug|x64.Build.0 = Debug
+		{63A6EF19-BA04-FE49-AD1F-B20E9755785B}.Debug|x86.ActiveCfg = Debug
+		{63A6EF19-BA04-FE49-AD1F-B20E9755785B}.Release|ARM64.ActiveCfg = Release
+		{63A6EF19-BA04-FE49-AD1F-B20E9755785B}.Release|x64.ActiveCfg = Release
+		{63A6EF19-BA04-FE49-AD1F-B20E9755785B}.Release|x64.Build.0 = Release
+		{63A6EF19-BA04-FE49-AD1F-B20E9755785B}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -112,9 +112,8 @@ namespace MozaAutoSettings.Pages
             updateProfilesList();
         }
 
-        private async void Save_Clicked(object sender, RoutedEventArgs e)
+        private void saveProfile()
         {
-            //saveProfile();
             if (selectedProfile != null)
             {
                 isProfileSelected = false;
@@ -122,6 +121,12 @@ namespace MozaAutoSettings.Pages
                 _profilesController.addProfile(selectedProfile);
                 updateProfilesList();
             }
+        }
+
+        private async void Save_Clicked(object sender, RoutedEventArgs e)
+        {
+            saveProfile();
+
 
             //show success message
             ContentDialog successDialog = new ContentDialog();
@@ -131,16 +136,15 @@ namespace MozaAutoSettings.Pages
             successDialog.PrimaryButtonText = "Ok";
 
             await successDialog.ShowAsync();
-
+            return;
         }
 
 
         private async void Apply_Clicked(object sender, RoutedEventArgs e)
         {
-            Save_Clicked(sender, e);
-            //saveProfile();
+            saveProfile();
             Tuple<string, bool> result = _profilesController.applyProfile(selectedProfile);
-            if (!result.Item2)
+            if (result.Item2 == false)
             {
                 //show error message
                 Debug.WriteLine("Error applying profile: " + result.Item1);
