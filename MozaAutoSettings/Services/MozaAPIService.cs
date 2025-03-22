@@ -2,14 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using mozaAPI;
 using System.Runtime.InteropServices;
 using System.Diagnostics;
-using System.Net.Http.Headers;
-using Microsoft.VisualBasic.FileIO;
-using Windows.ApplicationModel.Appointments.AppointmentsProvider;
 
 namespace MozaAutoSettings.Services
 {
@@ -43,7 +38,43 @@ namespace MozaAutoSettings.Services
         };
         private static void LoadUnmanagedDll()
         {
-            SetDllDirectory(@"C:\Users\Archit\source\repos\MozaAutoSettings\MozaAutoSettings\lib"); //TODO change this to dynamic path
+            ////check 
+            //SetDllDirectory(@"C:\Users\Archit\source\repos\MozaAutoSettings\MozaAutoSettings\lib");
+            // if in debug mode, set dll directory to libs folder
+            string folderPath;
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                folderPath = @"C:\Users\Archit\source\repos\MozaAutoSettings\MozaAutoSettings\lib";
+            }
+            else
+            {
+                folderPath = LibsFolder;
+            }
+            //// Register all DLLs in the libs folder
+            //string[] files = System.IO.Directory.GetFiles(folderPath, "*.dll");
+            //foreach (string file in files)
+            //{
+            //    RegisterDll(file);
+            //}
+
+            SetDllDirectory(folderPath);
+
+        }
+
+        private static void RegisterDll(string dllPath)
+        {
+            Process process = new Process();
+            process.StartInfo.FileName = "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\RegAsm.exe";
+            process.StartInfo.Arguments = $"/codebase \"{dllPath}\""; // /codebase for registering the assembly with its location
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+            process.WaitForExit();
+            //check if the dll was registered successfully
+            if (process.ExitCode != 0)
+            {
+                Debug.WriteLine("Error registering dll: " + dllPath);
+            }
         }
 
         public static void Initialize()

@@ -30,7 +30,7 @@ namespace MozaAutoSettings
         public MainWindow()
         {
             this.InitializeComponent();
-            MozaAPIService.Initialize();
+            
         }
 
 
