@@ -70,6 +70,18 @@ namespace MozaAutoSettings.Pages
             }
         }
 
+
+        private ProfileModel _currentlyLoadedProfile;
+        public ProfileModel currentlyLoadedProfile
+        {
+            get => _currentlyLoadedProfile;
+            set
+            {
+                _currentlyLoadedProfile = value;
+                OnPropertyChanged();
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -89,6 +101,7 @@ namespace MozaAutoSettings.Pages
 
         private void updateProfilesList()
         {
+            currentlyLoadedProfile = ProfilesController.getCurrentlyLoadedProfile();
             ProfilesController.readProfilesFromDirectory();
             this.ProfileList = new ObservableCollection<ProfileModel>(ProfilesController.getProfiles());
         }
@@ -167,6 +180,18 @@ namespace MozaAutoSettings.Pages
                 _profilesController.removeProfile(selectedProfile);
                 updateProfilesList();
             }
+        }
+
+        //constantly update the currently loaded profile
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += (s, e) =>
+            {
+                currentlyLoadedProfile = ProfilesController.getCurrentlyLoadedProfile();
+            };
+            timer.Start();
         }
 
     }

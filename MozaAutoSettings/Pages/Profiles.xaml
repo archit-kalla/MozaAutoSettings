@@ -44,8 +44,20 @@
             VerticalAlignment="Top" 
             Margin="30,40,20,10" 
             Spacing="4">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock FontSize="24"
+                           >
+                    <Span>
+                        <Bold>
+                            Currently Loaded Profile:
+                        </Bold>
+                        
+                    </Span>
+                    </TextBlock>
+                    <TextBlock Text="{Binding currentlyLoadedProfile.Name}" FontSize="24" Margin="10,0,0,0"/>
+                </StackPanel>                
                 <TextBlock Text="{Binding selectedProfile.Name}" 
-                        FontSize="30"
+                        FontSize="24"
                         Margin="0,10,0,10"/>
                 <TextBlock Text="{Binding selectedProfile.Process}" 
                             FontSize="20"

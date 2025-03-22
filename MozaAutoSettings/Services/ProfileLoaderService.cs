@@ -9,13 +9,13 @@ using MozaAutoSettings.Models;
 
 namespace MozaAutoSettings.Services
 {
-    class ProfileLoaderService
+    public class ProfileLoaderService
     {
         private readonly ProfilesController _profilesController;
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly TimeSpan _checkInterval;
 
-        private ProfileModel currentlyLoadedProfile;
+        public ProfileModel currentlyLoadedProfile;
 
         public ProfileLoaderService()
         {
@@ -45,10 +45,12 @@ namespace MozaAutoSettings.Services
                     {
                         if (currentlyLoadedProfile.Name != profile.Name)
                         {
-                            currentlyLoadedProfile = profile;
+                            
                             var result = _profilesController.applyProfile(profile);
                             if (result.Item2)
                             {
+                                currentlyLoadedProfile = profile;
+                                ProfilesController.setCurrentlyLoadedProfile(profile);
                                 Debug.WriteLine($"Profile {profile.Name} applied successfully.");
                             }
                             else

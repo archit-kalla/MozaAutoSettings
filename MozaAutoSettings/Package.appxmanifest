@@ -10,7 +10,7 @@
   <Identity
     Name="07b60ab3-edd6-4207-9cd9-ad3f4dc060ff"
     Publisher="CN=Archit"
-    Version="1.0.0.0" />
+    Version="0.1.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="07b60ab3-edd6-4207-9cd9-ad3f4dc060ff" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

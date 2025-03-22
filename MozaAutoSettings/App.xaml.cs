@@ -40,7 +40,7 @@ namespace MozaAutoSettings
         }
         // store the window object
         private Window? m_window;
-        private ProfileLoaderService _profileLoaderService;
+        public ProfileLoaderService profileLoaderService;
 
         /// <summary>
         /// Invoked when the application is launched.
@@ -51,7 +51,7 @@ namespace MozaAutoSettings
             m_window = new MainWindow();
             m_window.Activate();
             // Start the ProfileLoaderService
-            _profileLoaderService = new ProfileLoaderService();
+            profileLoaderService = new ProfileLoaderService();
         }
 
         public static Window GetWindow()

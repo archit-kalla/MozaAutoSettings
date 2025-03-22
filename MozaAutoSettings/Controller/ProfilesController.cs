@@ -15,8 +15,15 @@ namespace MozaAutoSettings.Controller
         //public List<String> processes { get; set; }
         private static List<ProfileModel> ProfileList { get; set; } = new List<ProfileModel>();
         private static readonly string ProfileDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "profiles");
+
+        public static ProfileModel CurrentLoadedProfile { get; set; } = new ProfileModel();
+
         public ProfilesController() 
         {
+            if (!System.IO.Directory.Exists(ProfileDirectory))
+            {
+                System.IO.Directory.CreateDirectory(ProfileDirectory);
+            }
             readProfilesFromDirectory();
         }
 
@@ -47,7 +54,7 @@ namespace MozaAutoSettings.Controller
         //read json files from a directory and add content to profile list
         public static void readProfilesFromDirectory()
         {
-            if (System.IO.Directory.Exists(ProfileDirectory))
+            if (System.IO.Directory.Exists(ProfileDirectory) == true)
             {
                 string[] files = System.IO.Directory.GetFiles(ProfileDirectory, "*.json");
                 foreach (string file in files)
@@ -111,6 +118,7 @@ namespace MozaAutoSettings.Controller
             }
             else
             {
+                CurrentLoadedProfile = profile;
                 return new Tuple<string, bool>("Profile applied successfully", true);
             }
         }
@@ -126,6 +134,16 @@ namespace MozaAutoSettings.Controller
                 }
             }
             return null;
+        }
+
+        public static ProfileModel getCurrentlyLoadedProfile()
+        {
+            return CurrentLoadedProfile;
+        }
+
+        public static void setCurrentlyLoadedProfile(ProfileModel profileModel)
+        {
+            CurrentLoadedProfile = profileModel;
         }
     }
 }
