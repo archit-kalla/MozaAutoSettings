@@ -12,14 +12,16 @@ namespace MozaAutoSettings.Controller
 {
     class ProfilesController
     {
-        //public List<String> processes { get; set; }
         private static List<ProfileModel> ProfileList { get; set; } = new List<ProfileModel>();
-        private static readonly string ProfileDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "profiles");
+        private static readonly object ProfileListLock = new object();
+
+        private static readonly string ProfileDirectory = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MozaAutoSettings", "Profiles");
 
         public static ProfileModel CurrentLoadedProfile { get; set; } = new ProfileModel();
 
-        public ProfilesController() 
+        public ProfilesController()
         {
+            Debug.WriteLine("Created profile directory " + ProfileDirectory);
             if (!System.IO.Directory.Exists(ProfileDirectory))
             {
                 System.IO.Directory.CreateDirectory(ProfileDirectory);
@@ -27,62 +29,70 @@ namespace MozaAutoSettings.Controller
             readProfilesFromDirectory();
         }
 
-        public void addProfile(ProfileModel profile)
+        public static void addProfile(ProfileModel profile)
         {
-            //add profile file to directory
-            String filePath = System.IO.Path.Combine(ProfileDirectory, profile.Name + ".json");
-
-            writeProfileToProfileDir(profile);
+            lock (ProfileListLock)
+            {
+                String filePath = System.IO.Path.Combine(ProfileDirectory, profile.Name + ".json");
+                writeProfileToProfileDir(profile);
+                ProfileList.Add(profile);
+            }
         }
 
-        public void removeProfile(ProfileModel profile) 
+        public static void removeProfile(ProfileModel profile)
         {
-            //remove profile file from directory
-            String filePath = System.IO.Path.Combine(ProfileDirectory, profile.Name + ".json");
-            if (System.IO.File.Exists(filePath))
+            lock (ProfileListLock)
             {
-                System.IO.File.Delete(filePath);
+                String filePath = System.IO.Path.Combine(ProfileDirectory, profile.Name + ".json");
+                if (System.IO.File.Exists(filePath))
+                {
+                    System.IO.File.Delete(filePath);
+                }
+                ProfileList.Remove(profile);
             }
-            ProfileList.Remove(profile);
         }
 
         public static List<ProfileModel> getProfiles()
         {
-            return ProfileList;
+            lock (ProfileListLock)
+            {
+                return new List<ProfileModel>(ProfileList);
+            }
         }
 
-        //read json files from a directory and add content to profile list
         public static void readProfilesFromDirectory()
         {
-            if (System.IO.Directory.Exists(ProfileDirectory) == true)
+            lock (ProfileListLock)
             {
-                string[] files = System.IO.Directory.GetFiles(ProfileDirectory, "*.json");
-                foreach (string file in files)
+                if (System.IO.Directory.Exists(ProfileDirectory))
                 {
-                    try
+                    string[] files = System.IO.Directory.GetFiles(ProfileDirectory, "*.json");
+                    foreach (string file in files)
                     {
-                        ProfileModel profile = Newtonsoft.Json.JsonConvert.DeserializeObject<ProfileModel>(System.IO.File.ReadAllText(file));
-                        if (profile != null)
+                        try
                         {
-                            //check if profile already exists in list
-                            if (ProfileList.Any(p => p.Name == profile.Name))
+                            ProfileModel profile = Newtonsoft.Json.JsonConvert.DeserializeObject<ProfileModel>(System.IO.File.ReadAllText(file));
+                            if (profile != null)
                             {
-                                Debug.WriteLine("profile already exists");
-                                continue;
+                                if (ProfileList.Any(p => p.Name == profile.Name))
+                                {
+                                    Debug.WriteLine("profile already exists");
+                                    continue;
+                                }
+                                Debug.WriteLine("adding profile");
+                                ProfileList.Add(profile);
                             }
-                            Debug.WriteLine("adding profile");
-                            ProfileList.Add(profile);
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine("Error reading profile from file: " + file + " " + ex.Message);
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Error reading profile from file: " + file + " " + ex.Message);
+                        }
                     }
                 }
             }
         }
 
-        public static bool writeProfileToProfileDir(ProfileModel profile)
+        public static Tuple<bool, string> writeProfileToProfileDir(ProfileModel profile)
         {
             String filePath = System.IO.Path.Combine(ProfileDirectory, profile.Name + ".json");
             Debug.WriteLine("saveing to path: " + filePath);
@@ -90,18 +100,17 @@ namespace MozaAutoSettings.Controller
             {
                 string json = Newtonsoft.Json.JsonConvert.SerializeObject(profile);
                 System.IO.File.WriteAllText(filePath, json);
-                return true;
+                return new Tuple<bool, string>(true, "");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error writing profile to file: " + ex.Message);
-                return false;
+                Debug.WriteLine("Error writing profile to file: " + ex.Message);
+                return new Tuple<bool, string>(false, ex.Message);
             }
         }
 
-        public Tuple<string,bool> applyProfile(ProfileModel profile)
+        public static Tuple<string, bool> applyProfile(ProfileModel profile)
         {
-            //apply profile settings to the game
             if (profile == null)
             {
                 return new Tuple<string, bool>("Profile is null", false);
@@ -112,7 +121,7 @@ namespace MozaAutoSettings.Controller
             }
             bool settingsValid = MozaAPIService.validateSettings(profile.WheelBaseSettings);
             ERRORCODE err = MozaAPIService.sendSettingsToWheelBase(profile.WheelBaseSettings);
-            if(err != ERRORCODE.NORMAL)
+            if (err != ERRORCODE.NORMAL)
             {
                 return new Tuple<string, bool>(err.ToString(), false);
             }
@@ -123,17 +132,19 @@ namespace MozaAutoSettings.Controller
             }
         }
 
-        //look through profile list and if process name matches, return true
         public static ProfileModel getProfile(string processName)
         {
-            foreach (ProfileModel profile in ProfileList)
+            lock (ProfileListLock)
             {
-                if (profile.Process == processName)
+                foreach (ProfileModel profile in ProfileList)
                 {
-                    return profile;
+                    if (profile.Process == processName)
+                    {
+                        return profile;
+                    }
                 }
+                return null;
             }
-            return null;
         }
 
         public static ProfileModel getCurrentlyLoadedProfile()

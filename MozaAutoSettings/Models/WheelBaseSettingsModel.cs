@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace MozaAutoSettings.Models
 {
 
-    public class WheelBaseSettingsModel
+    public class WheelBaseSettingsModel : IComparable<WheelBaseSettingsModel>
     {
         //right now only synchronus support
         public int MotorLimitAngle1
@@ -71,5 +71,63 @@ namespace MozaAutoSettings.Models
             MotorEqualizerAmp = new Dictionary<string, int>();
         }
 
+        public int CompareTo(WheelBaseSettingsModel other)
+        {
+            if (other == null) return 1;
+            if (MotorLimitAngle.Item1 != other.MotorLimitAngle.Item1) return -1;
+            if (MotorLimitAngle.Item2 != other.MotorLimitAngle.Item2) return -1;
+            if (MotorRoadSensitivity != other.MotorRoadSensitivity) return -1;
+            if (MotorFfbStrength != other.MotorFfbStrength) return -1;
+            if (MotorLimitWheelSpeed != other.MotorLimitWheelSpeed) return -1;
+            if (MotorSpringStrength != other.MotorSpringStrength) return -1;
+            if (MotorNaturalDamper != other.MotorNaturalDamper) return -1;
+            if (MotorNaturalFriction != other.MotorNaturalFriction) return -1;
+            if (MotorSpeedDamping != other.MotorSpeedDamping) return -1;
+            if (MotorPeakTorque != other.MotorPeakTorque) return -1;
+            if (MotorNaturalInertiaRatio != other.MotorNaturalInertiaRatio) return -1;
+            if (MotorNaturalInertia != other.MotorNaturalInertia) return -1;
+            if (MotorSpeedDampingStartPoint != other.MotorSpeedDampingStartPoint) return -1;
+            if (MotorHandsOffProtection != other.MotorHandsOffProtection) return -1;
+            if (MotorFfbReverse != other.MotorFfbReverse) return -1;
+            if (EqualizerAmp7_5 != other.EqualizerAmp7_5) return -1;
+            if (EqualizerAmp13 != other.EqualizerAmp13) return -1;
+            if (EqualizerAmp22_5 != other.EqualizerAmp22_5) return -1;
+            if (EqualizerAmp39 != other.EqualizerAmp39) return -1;
+            if (EqualizerAmp55 != other.EqualizerAmp55) return -1;
+            if (EqualizerAmp100 != other.EqualizerAmp100) return -1;
+
+            return 0;
+
+        }
+
+        public WheelBaseSettingsModel Clone()
+        {
+            return new WheelBaseSettingsModel
+            {
+                MotorLimitAngle = new Tuple<int, int>(MotorLimitAngle.Item1, MotorLimitAngle.Item2),
+                MotorRoadSensitivity = MotorRoadSensitivity,
+                MotorFfbStrength = MotorFfbStrength,
+                MotorLimitWheelSpeed = MotorLimitWheelSpeed,
+                MotorSpringStrength = MotorSpringStrength,
+                MotorNaturalDamper = MotorNaturalDamper,
+                MotorNaturalFriction = MotorNaturalFriction,
+                MotorSpeedDamping = MotorSpeedDamping,
+                MotorPeakTorque = MotorPeakTorque,
+                MotorNaturalInertiaRatio = MotorNaturalInertiaRatio,
+                MotorNaturalInertia = MotorNaturalInertia,
+                MotorSpeedDampingStartPoint = MotorSpeedDampingStartPoint,
+                MotorHandsOffProtection = MotorHandsOffProtection,
+                MotorFfbReverse = MotorFfbReverse,
+                EqualizerAmp7_5 = EqualizerAmp7_5,
+                EqualizerAmp13 = EqualizerAmp13,
+                EqualizerAmp22_5 = EqualizerAmp22_5,
+                EqualizerAmp39 = EqualizerAmp39,
+                EqualizerAmp55 = EqualizerAmp55,
+                EqualizerAmp100 = EqualizerAmp100,
+                MotorEqualizerAmp = new Dictionary<string, int>(MotorEqualizerAmp)
+            };
+        }
+
     }
+
 }

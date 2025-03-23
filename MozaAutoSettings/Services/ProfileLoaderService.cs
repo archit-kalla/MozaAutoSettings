@@ -19,7 +19,6 @@ namespace MozaAutoSettings.Services
 
         public ProfileLoaderService()
         {
-            _profilesController = new ProfilesController();
             _cancellationTokenSource = new CancellationTokenSource();
             _checkInterval = TimeSpan.FromSeconds(30); // Check every 30 seconds
             currentlyLoadedProfile = new ProfileModel();
@@ -40,16 +39,18 @@ namespace MozaAutoSettings.Services
                 var openPrograms = GetOpenPrograms();
                 foreach (var program in openPrograms)
                 {
-                    var profile = ProfilesController.getProfile(program);
-                    if (profile!=null)
+                    ProfileModel profile = ProfilesController.getProfile(program);
+                    if (profile != null)
                     {
-                        if (currentlyLoadedProfile.Name != profile.Name)
+                        //check gotten profile is not the same as the currently loaded profile
+                        if (currentlyLoadedProfile.CompareTo(profile) != 0)
                         {
-                            
-                            var result = _profilesController.applyProfile(profile);
+                            //if it is not the same, apply the updated profile
+
+                            var result = ProfilesController.applyProfile(profile);
                             if (result.Item2)
                             {
-                                currentlyLoadedProfile = profile;
+                                currentlyLoadedProfile = profile.Clone(); // Use Clone method to create a new instance
                                 ProfilesController.setCurrentlyLoadedProfile(profile);
                                 Debug.WriteLine($"Profile {profile.Name} applied successfully.");
                             }
@@ -62,7 +63,6 @@ namespace MozaAutoSettings.Services
                         {
                             Debug.WriteLine($"Profile {profile.Name} is already applied.");
                         }
-
                     }
                 }
                 await Task.Delay(_checkInterval, cancellationToken);
@@ -80,7 +80,7 @@ namespace MozaAutoSettings.Services
                 {
                     if (process.MainWindowHandle != IntPtr.Zero && process.MainModule != null)
                     {
-                        Debug.WriteLine(System.IO.Path.GetFileName(process.MainModule.FileName));
+                        //Debug.WriteLine(System.IO.Path.GetFileName(process.MainModule.FileName));
 
                         //remove the leaading path from the process name and only keep the name of the executable and add it to the list
                         openPrograms.Add(System.IO.Path.GetFileName(process.MainModule.FileName));

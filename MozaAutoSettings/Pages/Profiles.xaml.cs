@@ -130,10 +130,11 @@ namespace MozaAutoSettings.Pages
             if (selectedProfile != null)
             {
                 isProfileSelected = false;
-                _profilesController.removeProfile(selectedProfile);
-                _profilesController.addProfile(selectedProfile);
+                ProfilesController.removeProfile(selectedProfile);
+                ProfilesController.addProfile(selectedProfile);
                 updateProfilesList();
             }
+            isProfileSelected = false;
         }
 
         private async void Save_Clicked(object sender, RoutedEventArgs e)
@@ -156,7 +157,7 @@ namespace MozaAutoSettings.Pages
         private async void Apply_Clicked(object sender, RoutedEventArgs e)
         {
             saveProfile();
-            Tuple<string, bool> result = _profilesController.applyProfile(selectedProfile);
+            Tuple<string, bool> result = ProfilesController.applyProfile(selectedProfile);
             if (result.Item2 == false)
             {
                 //show error message
@@ -177,9 +178,10 @@ namespace MozaAutoSettings.Pages
         {
             if (selectedProfile != null)
             {
-                _profilesController.removeProfile(selectedProfile);
+                ProfilesController.removeProfile(selectedProfile);
                 updateProfilesList();
             }
+            isProfileSelected = false;
         }
 
         //constantly update the currently loaded profile

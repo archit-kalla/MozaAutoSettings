@@ -182,17 +182,6 @@
                         {
                         }
                     }
-                    "{9EF0B969-E518-4E46-987F-47570745A589}:_EE88D3518E3B45139DAFE132BB4C1E6C"
-                    {
-                    "Name" = "8:profiles"
-                    "AlwaysCreate" = "11:TRUE"
-                    "Condition" = "8:"
-                    "Transitive" = "11:FALSE"
-                    "Property" = "8:_71A18340F2304EC3B51B30A507718B2A"
-                        "Folders"
-                        {
-                        }
-                    }
                 }
             }
             "{1525181F-901A-416C-8A58-119130FE478E}:_51F639DBB7EC4385A4167C445664D0EC"
@@ -204,6 +193,39 @@
             "Property" = "8:ProgramMenuFolder"
                 "Folders"
                 {
+                }
+            }
+            "{1525181F-901A-416C-8A58-119130FE478E}:_6EECF18EFB3D45F391E351445E197704"
+            {
+            "Name" = "8:#1915"
+            "AlwaysCreate" = "11:TRUE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:AppDataFolder"
+                "Folders"
+                {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_BEC6C2EF18774E09B7C5774DEE061C14"
+                    {
+                    "Name" = "8:MozaAutoSettings"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_29B5F2016D1842DF8E4DA55E91FF64A3"
+                        "Folders"
+                        {
+                            "{9EF0B969-E518-4E46-987F-47570745A589}:_9F68E054DC07424BB94658219358E3B5"
+                            {
+                            "Name" = "8:profiles"
+                            "AlwaysCreate" = "11:TRUE"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "Property" = "8:_EE0E9539AFB24B53A9591A6F9E2DEB44"
+                                "Folders"
+                                {
+                                }
+                            }
+                        }
+                    }
                 }
             }
             "{1525181F-901A-416C-8A58-119130FE478E}:_F2DA94AE0D694B3BA300A5A3091919AF"
@@ -234,7 +256,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:MozaAutoSettings"
         "ProductCode" = "8:{8196E33F-E54B-4BDC-9C7A-801D5319F09E}"
-        "PackageCode" = "8:{0789D820-364C-459C-9960-0DD7F53F8F57}"
+        "PackageCode" = "8:{4FB03848-636C-467D-BC79-0348828AA1F9}"
         "UpgradeCode" = "8:{EFB4F674-5DAA-4DE7-8037-831280B7238C}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -354,6 +376,20 @@
         }
         "Shortcut"
         {
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B18C17F3B9AB49C3B0006538A162C1A8"
+            {
+            "Name" = "8:MozaAutoSettings"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_D343915F010A46DF9CCF7B66DB211949"
+            "Folder" = "8:_51F639DBB7EC4385A4167C445664D0EC"
+            "WorkingFolder" = "8:_0C83120E000A4BE299EB059A52DA859E"
+            "Icon" = "8:"
+            "Feature" = "8:"
+            }
         }
         "UserInterface"
         {

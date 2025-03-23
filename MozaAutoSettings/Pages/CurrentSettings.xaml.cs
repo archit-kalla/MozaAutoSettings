@@ -272,16 +272,16 @@ namespace MozaAutoSettings.Pages
             }
 
 
-            bool isWritten = ProfilesController.writeProfileToProfileDir(profile);
+            Tuple<bool,string> err = ProfilesController.writeProfileToProfileDir(profile);
             //
-            if (!isWritten)
+            if (err.Item1 == false)
             {
                 //pop up error dialogue
                 ContentDialog errorDialog = new ContentDialog();
                 errorDialog.XamlRoot = this.XamlRoot;
                 errorDialog.Style = Application.Current.Resources["DefaultContentDialogStyle"] as Style;
                 errorDialog.Title = "Error";
-                errorDialog.Content = "Failed to write profile";
+                errorDialog.Content = "Failed to write profile" + err.Item2;
                 errorDialog.PrimaryButtonText = "Ok";
 
                 await errorDialog.ShowAsync();
