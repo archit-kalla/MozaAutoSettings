@@ -5,7 +5,8 @@
 [currentSettings]: readme_images/CurrentSettings.png
 [profilesPage]: readme_images/profilesPage.png
 
-[currentSettings]
+![currentSettings]
+![profilesPage]
 
 
 
