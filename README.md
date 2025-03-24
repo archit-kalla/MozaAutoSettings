@@ -9,8 +9,8 @@
 ![profilesPage]
 
 ### Requirements:
-- .NET 10 Desktop Runtime for x64 [https://dotnet.microsoft.com/en-us/download/dotnet/10.0]
-- Visual Studio C++ Redist v17 for x64 [https://aka.ms/vs/17/release/vc_redist.x64.exe]
+- [.NET 10 Desktop Runtime for x64](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
+- [Visual Studio C++ Redist v17 for x64](https://aka.ms/vs/17/release/vc_redist.x64.exe)
 
 
 
